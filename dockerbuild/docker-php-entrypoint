@@ -1,0 +1,17 @@
+#!/bin/sh
+set -e
+
+if [ -n "${USER_ID}" ]; then
+    usermod -u ${USER_ID} -o www-data
+fi
+if [ -n "${GROUP_ID}" ]; then
+    groupmod -g ${GROUP_ID} www-data
+fi
+
+composer install
+composer dump-autoload
+
+php artisan cache:clear
+php artisan config:clear
+
+php artisan migrate

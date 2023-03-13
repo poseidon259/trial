@@ -42,12 +42,9 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 # Copy Project
 COPY . /var/www/html/
 COPY nginx.conf /etc/nginx/conf.d/default.conf
+COPY dockerbuild/docker-php-entrypoint /usr/bin/
 
 WORKDIR /var/www/html/
-
-#  Run composer
-RUN composer install
-RUN composer dump-autoload
 
 # Permission
 RUN chown root /var/www/html/storage/
@@ -57,5 +54,3 @@ RUN chmod -R 777 /var/www/html/storage/
 USER root
 
 EXPOSE 80
-
-CMD php artisan migrate;php artisan config:clear;/docker-entrypoint.sh;
