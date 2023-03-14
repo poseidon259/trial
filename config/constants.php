@@ -36,8 +36,14 @@ define('ACTIVE', 1);
 // Role
 define('ROLE_ADMIN', 1);
 define('ROLE_STORE', 2);
-define('ROLE_USER', 3);
+define('ROLE_EMP', 3);
+define('ROLE_USER', 4);
 
 // user profile
 define('MALE', 1);
 define('FEMALE', 2);
+
+// store status
+define('STORE_INACTIVE', 0);
+define('STORE_ACTIVE', 1);
+define('STORE_PENDING', 2);

@@ -8,6 +8,7 @@ use App\Http\Requests\CreateUserRequest;
 use App\Http\Requests\GetListUserRequest;
 use App\Http\Requests\UpdateInfoRequest;
 use App\Http\Requests\UpdateUserRequest;
+use App\Http\Requests\UserUpdatePasswordRequest;
 use App\Services\UserService;
 use Exception;
 use Illuminate\Support\Facades\Auth;
@@ -97,7 +98,7 @@ class UserController extends Controller
         }
     }
 
-    public function updatePassword($request) {
+    public function updatePassword(UserUpdatePasswordRequest $request) {
         DB::beginTransaction();
         try {
             $userLogin = Auth::user();
