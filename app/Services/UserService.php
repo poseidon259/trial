@@ -208,7 +208,7 @@ class UserService
         $limit = $request->limit ?? LIMIT;
         $page = $request->page ?? PAGE;
 
-        $users = $this->userRepositoryInterface->getListUser($request)->paginate($limit, $page);
+        $users = $this->userRepositoryInterface->g($request)->paginate($limit, $page);
 
         return [
             'users' => $users->items(),

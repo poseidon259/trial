@@ -39,7 +39,7 @@ return [
     'create_error' => 'Tạo mới thất bại',
     'create_success' => 'Tạo mới thành công',
     'update_success' => 'Cập nhật thông tin thành công',
-    'update_fail' => 'Cập nhật thông tin thất bại',
+    'update_error' => 'Cập nhật thông tin thất bại',
     'delete_error' => 'Xóa thất bại',
     'delete_success' => 'Xóa thành công',
 
@@ -48,4 +48,5 @@ return [
     'phone_number_exists' => 'Số điện thoại đã tồn tại',
     'title_update_account' => 'Thông báo cập nhật tài khoản tại hệ thống Trial',
     'old_password_not_correct' => 'Mật khẩu cũ không đúng',
+    'store_not_found' => 'Không tìm thấy cửa hàng',
 ];
