@@ -34,6 +34,14 @@ Route::group(['namespace' => 'api\v1'], function () {
             Route::put('{id}/change_status', [UserController::class, 'changeStatus']);
             Route::put('change_password', [UserController::class, 'updatePassword']);
         });
+
+        Route::prefix('store')->group(function () {
+            Route::get('list', [StoreController::class, 'list']);
+            Route::get('show/{id}', [StoreController::class, 'show']);
+            Route::post('create', [StoreController::class, 'create']);
+            Route::put('update/{id}', [StoreController::class, 'update']);
+            Route::delete('delete/{id}', [StoreController::class, 'delete']);
+        });
     });
     
 });
