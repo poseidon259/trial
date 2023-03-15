@@ -47,3 +47,5 @@ define('FEMALE', 2);
 define('STORE_INACTIVE', 0);
 define('STORE_ACTIVE', 1);
 define('STORE_PENDING', 2);
+
+define('MAX_UPLOAD_FILE_SIZE', 102400);
