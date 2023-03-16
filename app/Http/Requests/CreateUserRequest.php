@@ -26,7 +26,7 @@ class CreateUserRequest extends BaseRequest
             'phone_number' => 'required|string',
             'user_name' => 'required|string',
             'gender' => 'required|integer',
-            'avatar' => 'mimes:jpeg,png,jpg,heic,jfif,mov,mp4|max:' . MAX_UPLOAD_FILE_SIZE,
+            'avatar' => 'mimes:jpeg,png,jpg,heic|max:' . MAX_UPLOAD_FILE_SIZE,
             'birthday' => 'nullable|string',
             'status' => 'required|integer',
         ];

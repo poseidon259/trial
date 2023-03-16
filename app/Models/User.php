@@ -35,6 +35,7 @@ class User extends Authenticatable
         'user_name',
         'gender',
         'avatar',
+        'fileId',
         'birthday',
         'status',
         'email_verified_at',

@@ -3,10 +3,12 @@
 namespace App\Services;
 
 use App\Repositories\Store\StoreRepositoryInterface;
-use Illuminate\Support\Facades\Mail;
 
 class StoreService
 {
+    const STORE_FOLDER_LOGO = 'stores/logo';
+    const STORE_FOLDER_BACKGROUND = 'stores/background';
+
     /**
      * @var StoreRepositoryInterface
      */
@@ -17,12 +19,19 @@ class StoreService
      */
     private $mailService;
 
+    /**
+     * @var ImageKitService
+     */
+    private $imageKitService;
+
     public function __construct(
         StoreRepositoryInterface $storeRepositoryInterface,
-        MailService $mailService
+        MailService $mailService,
+        ImageKitService $imageKitService
     ) {
         $this->storeRepositoryInterface = $storeRepositoryInterface;
         $this->mailService = $mailService;
+        $this->imageKitService = $imageKitService;
     }
 
     public function create($request)
@@ -48,10 +57,32 @@ class StoreService
             'house_number' => $request->house_number,
             'description_list' => $request->description_list,
             'description_detail' => $request->description_detail,
-            'logo' => $request->logo,
-            'background_image' => $request->background_image,
             'status' => $request->status,
         ];
+
+        if (isset($request->logo)) {
+            $file = $request->logo;
+            $fileName = $file->getClientOriginalName();
+            $options = [
+                'folder' => self::STORE_FOLDER_LOGO,
+            ];
+
+            $uploadFile = $this->imageKitService->upload($file, $fileName, $options);
+            $params['logo_file_id'] = $uploadFile['fileId'];
+            $params['logo'] = $uploadFile['filePath'];
+        }
+
+        if (isset($request->background_image)) {
+            $file = $request->background_image;
+            $fileName = $file->getClientOriginalName();
+            $options = [
+                'folder' => self::STORE_FOLDER_BACKGROUND,
+            ];
+
+            $uploadFile = $this->imageKitService->upload($file, $fileName, $options);
+            $params['background_file_id'] = $uploadFile['fileId'];
+            $params['background_image'] = $uploadFile['filePath'];
+        }
 
         $store = $this->storeRepositoryInterface->create($params);
 
@@ -92,12 +123,50 @@ class StoreService
             'house_number' => $request->house_number,
             'description_list' => $request->description_list,
             'description_detail' => $request->description_detail,
-            'logo' => $request->logo,
-            'background_image' => $request->background_image,
             'status' => $request->status,
         ];
 
-        $store = $this->storeRepositoryInterface->update($store, $params);
+        if (isset($request->logo)) {
+            $file = $request->logo;
+            $fileName = $file->getClientOriginalName();
+            $options = [
+                'folder' => self::STORE_FOLDER_LOGO,
+            ];
+
+            $uploadFile = $this->imageKitService->upload($file, $fileName, $options);
+            $params['logo_file_id'] = $uploadFile['fileId'];
+            $params['logo'] = $uploadFile['filePath'];
+        } else {
+
+            if ($store->logo_file_id) {
+                $this->imageKitService->delete($store->logo_file_id);
+            }
+
+            $params['logo_file_id'] = null;
+            $params['logo'] = null;
+        }
+
+        if (isset($request->background_image)) {
+            $file = $request->background_image;
+            $fileName = $file->getClientOriginalName();
+            $options = [
+                'folder' => self::STORE_FOLDER_BACKGROUND,
+            ];
+
+            $uploadFile = $this->imageKitService->upload($file, $fileName, $options);
+            $params['background_file_id'] = $uploadFile['fileId'];
+            $params['background_image'] = $uploadFile['filePath'];
+        } else {
+
+            if ($store->background_file_id) {
+                $this->imageKitService->delete($store->background_file_id);
+            }
+
+            $params['background_file_id'] = null;
+            $params['background_image'] = null;
+        }
+
+        $store = $this->storeRepositoryInterface->update($store->id, $params);
 
         if (!$store) {
             return _error(null, __('messages.update_error'), HTTP_BAD_REQUEST);

@@ -24,8 +24,8 @@ class CreateStoreRequest extends BaseRequest
             'house_number' => 'nullable|string',
             'description_list' => 'nullable|string',
             'description_detail' => 'nullable|string',
-            'logo' => 'nullable|string',
-            'background_image' => 'nullable|string',
+            'logo' => 'mimes:jpeg,png,jpg,heic|max:' . MAX_UPLOAD_FILE_SIZE,
+            'background_image' => 'mimes:jpeg,png,jpg,heic|max:' . MAX_UPLOAD_FILE_SIZE,
             'status' => 'required|integer'
         ];
     }
