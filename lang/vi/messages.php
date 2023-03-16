@@ -49,4 +49,8 @@ return [
     'title_update_account' => 'Thông báo cập nhật tài khoản tại hệ thống Trial',
     'old_password_not_correct' => 'Mật khẩu cũ không đúng',
     'store_not_found' => 'Không tìm thấy cửa hàng',
+
+    'address_limit' => 'Bạn đã đạt giới hạn số địa chỉ',
+    'address_not_found' => 'Không tìm thấy địa chỉ',
+    'delete_default_address_error' => 'Không thể xóa địa chỉ mặc định',
 ];

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\UserAddressController;
 use App\Http\Controllers\Api\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -33,6 +34,14 @@ Route::group(['namespace' => 'api\v1'], function () {
             Route::get('list', [UserController::class, 'list']);
             Route::put('{id}/change_status', [UserController::class, 'changeStatus']);
             Route::put('change_password', [UserController::class, 'updatePassword']);
+
+            Route::prefix('{userId}/address')->group(function () {
+                Route::get('list', [UserAddressController::class, 'list']);
+                Route::get('show/{addressId}', [UserAddressController::class, 'show']);
+                Route::post('create', [UserAddressController::class, 'create']);
+                Route::put('update/{addressId}', [UserAddressController::class, 'update']);
+                Route::delete('delete/{addressId}', [UserAddressController::class, 'delete']);
+            });
         });
 
         Route::prefix('store')->group(function () {

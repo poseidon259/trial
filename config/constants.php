@@ -49,3 +49,8 @@ define('STORE_ACTIVE', 1);
 define('STORE_PENDING', 2);
 
 define('MAX_UPLOAD_FILE_SIZE', 102400);
+
+// user address
+define('ADDRESS_DEFAULT', 1);
+define('ADDRESS_NOT_DEFAULT', 0);
+define('LIMIT_ADDRESS', 5);

@@ -17,17 +17,19 @@ use Illuminate\Support\Facades\Log;
 
 class UserController extends Controller
 {
-
+    /**
+     * @var UserService
+     */
     private $userService;
 
     public function __construct(
         UserService $userService,
-    )
-    {
+    ) {
         $this->userService = $userService;
     }
 
-    public function updateProfile(UpdateInfoRequest $request) {
+    public function updateProfile(UpdateInfoRequest $request)
+    {
         DB::beginTransaction();
         try {
             $userLogin = Auth::user();
@@ -41,7 +43,8 @@ class UserController extends Controller
         }
     }
 
-    public function show($id) {
+    public function show($id)
+    {
         try {
             return $this->userService->show($id);
         } catch (Exception $e) {
@@ -50,7 +53,8 @@ class UserController extends Controller
         }
     }
 
-    public function create(CreateUserRequest $request) {
+    public function create(CreateUserRequest $request)
+    {
         DB::beginTransaction();
         try {
             $user = $this->userService->create($request);
@@ -63,7 +67,8 @@ class UserController extends Controller
         }
     }
 
-    public function update(UpdateUserRequest $request, $id) {
+    public function update(UpdateUserRequest $request, $id)
+    {
         DB::beginTransaction();
         try {
             $user = $this->userService->update($request, $id);
@@ -76,7 +81,8 @@ class UserController extends Controller
         }
     }
 
-    public function delete($id) {
+    public function delete($id)
+    {
         DB::beginTransaction();
         try {
             $user = $this->userService->delete($id);
@@ -89,7 +95,8 @@ class UserController extends Controller
         }
     }
 
-    public function list(GetListUserRequest $request) {
+    public function list(GetListUserRequest $request)
+    {
         try {
             return $this->userService->list($request);
         } catch (Exception $e) {
@@ -98,7 +105,8 @@ class UserController extends Controller
         }
     }
 
-    public function updatePassword(UserUpdatePasswordRequest $request) {
+    public function updatePassword(UserUpdatePasswordRequest $request)
+    {
         DB::beginTransaction();
         try {
             $userLogin = Auth::user();
@@ -112,7 +120,8 @@ class UserController extends Controller
         }
     }
 
-    public function changeStatus(ChangeStatusRequest $request, $id) {
+    public function changeStatus(ChangeStatusRequest $request, $id)
+    {
         DB::beginTransaction();
         try {
             $user = $this->userService->changeStatus($request, $id);

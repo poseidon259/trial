@@ -9,7 +9,6 @@ use Illuminate\Support\Str;
 
 class UserService
 {
-    const IMAGEKIT_FOLDER = '/users';
     /**
      * @var UserRepositoryInterface
      */
@@ -20,20 +19,13 @@ class UserService
      */
     private $mailService;
 
-    /**
-     * @var ImageKitService
-     */
-    private $imageKitService;
-
     public function __construct(
         UserRepositoryInterface $userRepositoryInterface,
-        MailService $mailService,
-        ImageKitService $imageKitService
+        MailService $mailService
     )
     {
         $this->userRepositoryInterface = $userRepositoryInterface;
         $this->mailService = $mailService;
-        $this->imageKitService = $imageKitService;
     }
 
     public function updateProfile($request, $user) {
@@ -94,7 +86,7 @@ class UserService
             $password = Str::random(10);
         }
 
-        $params = [
+        $user = $this->userRepositoryInterface->create([
             'email' => $request->email,
             'first_name' => $request->first_name,
             'last_name' => $request->last_name,
@@ -111,21 +103,7 @@ class UserService
             'gender' => $request->gender,
             'user_name' => $request->user_name,
             'status' => $request->status,
-        ];
-
-        if (isset($request->avatar)) {
-            $file = $request->avatar;
-            $fileName = $file->getClientOriginalName();
-            $options = [
-                'folder' => self::IMAGEKIT_FOLDER,
-            ];
-
-            $uploadFile = $this->imageKitService->upload($file, $fileName, $options);
-            $params['fileId'] = $uploadFile['fileId'];
-            $params['avatar'] = $uploadFile['filePath'];
-        }
-
-        $user = $this->userRepositoryInterface->create($params);
+        ]);
 
         if (!$user) {
             return _error(null, __('messages.create_error'), HTTP_BAD_REQUEST);
@@ -230,7 +208,7 @@ class UserService
         $limit = $request->limit ?? LIMIT;
         $page = $request->page ?? PAGE;
 
-        $users = $this->userRepositoryInterface->g($request)->paginate($limit, $page);
+        $users = $this->userRepositoryInterface->getListUser($request)->paginate($limit, $page);
 
         return [
             'users' => $users->items(),
