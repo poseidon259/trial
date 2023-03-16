@@ -28,8 +28,17 @@ class UserController extends Controller
         $this->userService = $userService;
     }
 
-    public function updateProfile(UpdateInfoRequest $request)
-    {
+    public function profile() {
+        try {
+            $userLogin = Auth::user();
+            return $this->userService->profile($userLogin);
+        } catch (Exception $e) {
+            Log::error(__METHOD__ . ' - ' . __LINE__ . ' : ' . $e->getMessage());
+            return _errorSystem();
+        }
+    }
+
+    public function updateProfile(UpdateInfoRequest $request) {
         DB::beginTransaction();
         try {
             $userLogin = Auth::user();

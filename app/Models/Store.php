@@ -36,6 +36,8 @@ class Store extends Model
         'description_detail',
         'logo',
         'background_image',
+        'logo_file_id',
+        'background_file_id',
         'status',
     ];
 }

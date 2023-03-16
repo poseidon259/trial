@@ -22,7 +22,7 @@ class UpdateUserRequest extends BaseRequest
             'ward_id' => 'required|integer',
             'house_number' => 'nullable|string',
             'gender' => 'required|integer',
-            'avatar' => 'nullable|string',
+            'avatar' => 'mimes:jpeg,png,jpg,heic|max:' . MAX_UPLOAD_FILE_SIZE,
             'birthday' => 'nullable|string',
             'status' => 'required|integer',
             'password' => 'nullable|string|min:6',

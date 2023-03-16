@@ -9,6 +9,7 @@ use Illuminate\Support\Str;
 
 class UserService
 {
+    const USERS_FOLDER = '/users';
     /**
      * @var UserRepositoryInterface
      */
@@ -19,16 +20,38 @@ class UserService
      */
     private $mailService;
 
+    /**
+     * @var ImageKitService
+     */
+    private $imageKitService;
+
     public function __construct(
         UserRepositoryInterface $userRepositoryInterface,
-        MailService $mailService
+        MailService $mailService,
+        ImageKitService $imageKitService
     )
     {
         $this->userRepositoryInterface = $userRepositoryInterface;
         $this->mailService = $mailService;
+        $this->imageKitService = $imageKitService;
     }
 
     public function updateProfile($request, $user) {
+
+        $checkExistsEmail = $this->userRepositoryInterface->checkExists('email', $request->email, $user->id);
+        if ($checkExistsEmail) {
+            return _error(null, __('messages.email_exists'), HTTP_BAD_REQUEST);
+        }
+
+        $checkExistsPhoneNumber = $this->userRepositoryInterface->checkExists('phone_number', $request->phone_number, $user->id);
+        if ($checkExistsPhoneNumber) {
+            return _error(null, __('messages.phone_number_exists'), HTTP_BAD_REQUEST);
+        }
+
+        $checkExistsUserName = $this->userRepositoryInterface->checkExists('user_name', $request->user_name, $user->id);
+        if ($checkExistsUserName) {
+            return _error(null, __('messages.user_name_exists'), HTTP_BAD_REQUEST);
+        }
 
         $params = [
             'first_name' => $request->first_name,
@@ -39,11 +62,33 @@ class UserService
             'ward_id' => $request->ward_id,
             'house_number' => $request->house_number,
             'phone_number' => $request->phone_number,
+            'email' => $request->email,
             'user_name' => $request->user_name,
             'gender' => $request->gender,
             'birthday' => $request->birthday,
-            'avatar' => $request->avatar,
         ];
+
+        if (isset($request->avatar)) {
+            $file = $request->avatar;
+            $fileName = $file->getClientOriginalName();
+            $options = [
+                'folder' => self::USERS_FOLDER
+            ];
+            if ($user->fileId) {
+                $this->imageKitService->delete($user->fileId);
+            }
+            $uploadFile = $this->imageKitService->upload($file, $fileName, $options);
+            $params['fileId'] = $uploadFile['fileId'];
+            $params['avatar'] = $uploadFile['filePath'];
+        } else {
+
+            if ($user->fileId) {
+                $this->imageKitService->delete($user->fileId);
+            }
+
+            $params['avatar'] = null;
+            $params['fileId'] = null;
+        }
 
         $newUser = $this->userRepositoryInterface->update($user->id, $params);
 
@@ -86,7 +131,7 @@ class UserService
             $password = Str::random(10);
         }
 
-        $user = $this->userRepositoryInterface->create([
+        $params = [
             'email' => $request->email,
             'first_name' => $request->first_name,
             'last_name' => $request->last_name,
@@ -99,11 +144,24 @@ class UserService
             'house_number' => $request->house_number,
             'phone_number' => $request->phone_number,
             'birthday' => $request->birthday,
-            'avatar' => $request->avatar,
             'gender' => $request->gender,
             'user_name' => $request->user_name,
             'status' => $request->status,
-        ]);
+        ];
+
+        if (isset($request->avatar)) {
+            $file = $request->avatar;
+            $fileName = $file->getClientOriginalName();
+            $options = [
+                'folder' => self::USERS_FOLDER,
+            ];
+
+            $uploadFile = $this->imageKitService->upload($file, $fileName, $options);
+            $params['fileId'] = $uploadFile['fileId'];
+            $params['avatar'] = $uploadFile['filePath'];
+        }
+
+        $user = $this->userRepositoryInterface->create($params);
 
         if (!$user) {
             return _error(null, __('messages.create_error'), HTTP_BAD_REQUEST);
@@ -130,6 +188,21 @@ class UserService
     
     public function update($request, $id) {
 
+        $checkExistsEmail = $this->userRepositoryInterface->findOne('email', $request->email);
+        if ($checkExistsEmail) {
+            return _error(null, __('messages.email_exists'), HTTP_BAD_REQUEST);
+        }
+
+        $checkExistsUserName = $this->userRepositoryInterface->findOne('user_name', $request->user_name);
+        if ($checkExistsUserName) {
+            return _error(null, __('messages.user_name_exists'), HTTP_BAD_REQUEST);
+        }
+
+        $checkExistsPhoneNumber = $this->userRepositoryInterface->findOne('phone_number', $request->phone_number);
+        if ($checkExistsPhoneNumber) {
+            return _error(null, __('messages.phone_number_exists'), HTTP_BAD_REQUEST);
+        }
+
         $user = $this->userRepositoryInterface->find($id);
 
         if (!$user) {
@@ -149,13 +222,34 @@ class UserService
             'district_id' => $request->district_id,
             'ward_id' => $request->ward_id,
             'house_number' => $request->house_number,
-            'avatar' => $request->avatar,
             'birthday' => $request->birthday,
             'status' => $request->status,
             'gender' => $request->gender,
             'role_id' => $request->role_id,
             'password' => Hash::make($password),
         ];
+
+        if (isset($request->avatar)) {
+            $file = $request->avatar;
+            $fileName = $file->getClientOriginalName();
+            $options = [
+                'folder' => self::USERS_FOLDER
+            ];
+            if ($user->fileId) {
+                $this->imageKitService->delete($user->fileId);
+            }
+            $uploadFile = $this->imageKitService->upload($file, $fileName, $options);
+            $params['fileId'] = $uploadFile['fileId'];
+            $params['avatar'] = $uploadFile['filePath'];
+        } else {
+
+            if ($user->fileId) {
+                $this->imageKitService->delete($user->fileId);
+            }
+
+            $params['avatar'] = null;
+            $params['fileId'] = null;
+        }
 
         $user = $this->userRepositoryInterface->update($id, $params);
 
@@ -188,7 +282,6 @@ class UserService
         if (!$user) {
             return _error(null, __('messages.user_not_found'), HTTP_NOT_FOUND);
         }
-
 
         $this->userRepositoryInterface->update($id, [
             'email' => $user->email . now(),
@@ -255,5 +348,15 @@ class UserService
         }
 
         return _success($user, __('messages.update_success'), HTTP_SUCCESS);
+    }
+
+    public function profile($user) {
+        $user = $this->userRepositoryInterface->find($user->id);
+
+        if (!$user) {
+            return _error(null, __('messages.user_not_found'), HTTP_NOT_FOUND);
+        }
+
+        return _success($user, __('messages.success'), HTTP_SUCCESS);
     }
 }

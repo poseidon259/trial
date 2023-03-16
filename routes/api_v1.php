@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\UserAddressController;
+use App\Http\Controllers\api\StoreController;
 use App\Http\Controllers\Api\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -25,11 +26,14 @@ Route::group(['namespace' => 'api\v1'], function () {
     Route::put('update_password', [AuthController::class, 'updatePassword']);
 
     Route::group(['middleware' => 'auth:api'], function () {
+        Route::get('profile', [UserController::class, 'profile']);
+        Route::post('update_profile', [UserController::class, 'updateProfile']);
+        Route::put('change_password', [UserController::class, 'updatePassword']);
+
         Route::prefix('user')->group(function () {
-            Route::put('update_profile', [UserController::class, 'updateProfile']);
             Route::get('show/{id}', [UserController::class, 'show']);
             Route::post('create', [UserController::class, 'create']);
-            Route::put('update/{id}', [UserController::class, 'update']);
+            Route::post('update/{id}', [UserController::class, 'update']);
             Route::delete('delete/{id}', [UserController::class, 'delete']);
             Route::get('list', [UserController::class, 'list']);
             Route::put('{id}/change_status', [UserController::class, 'changeStatus']);
@@ -48,7 +52,7 @@ Route::group(['namespace' => 'api\v1'], function () {
             Route::get('list', [StoreController::class, 'list']);
             Route::get('show/{id}', [StoreController::class, 'show']);
             Route::post('create', [StoreController::class, 'create']);
-            Route::put('update/{id}', [StoreController::class, 'update']);
+            Route::post('update/{id}', [StoreController::class, 'update']);
             Route::delete('delete/{id}', [StoreController::class, 'delete']);
         });
     });

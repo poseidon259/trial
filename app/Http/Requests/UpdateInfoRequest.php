@@ -23,7 +23,7 @@ class UpdateInfoRequest extends BaseRequest
             'phone_number' => 'required|string',
             'user_name' => 'required|string|min:6|max:14',
             'gender' => 'required|integer',
-            'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'avatar' => 'mimes:jpeg,png,jpg,heic|max:' . MAX_UPLOAD_FILE_SIZE,
             'birthday' => 'nullable|string',
         ];
     }
