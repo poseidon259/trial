@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Repositories\User;
+namespace App\Repositories\Category;
 
 use App\Repositories\Base\BaseRepositoryInterface;
 
-interface UserRepositoryInterface extends BaseRepositoryInterface
+interface CategoryRepositoryInterface extends BaseRepositoryInterface
 {
     public function getModel();
 
@@ -12,5 +12,5 @@ interface UserRepositoryInterface extends BaseRepositoryInterface
 
     public function findOne($key, $value);
 
-    public function getListUser($request);
+    public function getListCategory($request);
 }
