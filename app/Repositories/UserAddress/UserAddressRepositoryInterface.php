@@ -15,4 +15,6 @@ interface UserAddressRepositoryInterface extends BaseRepositoryInterface
     public function getListUserAddress($request);
 
     public function getListByUserId($userId);
+
+    public function updateDefault($userId, $id);
 }

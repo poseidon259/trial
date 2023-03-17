@@ -53,4 +53,6 @@ return [
     'address_limit' => 'Bạn đã đạt giới hạn số địa chỉ',
     'address_not_found' => 'Không tìm thấy địa chỉ',
     'delete_default_address_error' => 'Không thể xóa địa chỉ mặc định',
+
+    'category_not_found' => 'Không tìm thấy danh mục',
 ];
