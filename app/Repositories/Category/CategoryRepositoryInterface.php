@@ -13,4 +13,6 @@ interface CategoryRepositoryInterface extends BaseRepositoryInterface
     public function findOne($key, $value);
 
     public function getListCategory($request);
+
+    public function detail($id);
 }

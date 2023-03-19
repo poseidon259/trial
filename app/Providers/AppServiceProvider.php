@@ -20,7 +20,8 @@ class AppServiceProvider extends ServiceProvider
             'Base',
             'User',
             'Store',
-            'UserAddress'
+            'UserAddress',
+            'Category',
         ];
 
         foreach ($repositories as $repo) {

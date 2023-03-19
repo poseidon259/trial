@@ -77,4 +77,15 @@ class CategoryController extends Controller
             return _errorSystem();
         }
     }
+
+    public function show($id)
+    {
+        try {
+            $category = $this->categoryService->show($id);
+            return $category;
+        } catch (Exception $e) {
+            Log::error(__METHOD__ . ' - ' . __LINE__ . ' : ' . $e->getMessage());
+            return _errorSystem();
+        }
+    }
 }

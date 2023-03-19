@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\UserAddressController;
 use App\Http\Controllers\api\StoreController;
 use App\Http\Controllers\Api\UserController;
@@ -54,6 +55,14 @@ Route::group(['namespace' => 'api\v1'], function () {
             Route::post('create', [StoreController::class, 'create']);
             Route::post('update/{id}', [StoreController::class, 'update']);
             Route::delete('delete/{id}', [StoreController::class, 'delete']);
+        });
+
+        Route::prefix('category')->group(function () {
+            Route::get('list', [CategoryController::class, 'list']);
+            Route::get('show/{id}', [CategoryController::class, 'show']);
+            Route::post('create', [CategoryController::class, 'create']);
+            Route::put('update/{id}', [CategoryController::class, 'update']);
+            Route::delete('delete/{id}', [CategoryController::class, 'delete']);
         });
     });
     
