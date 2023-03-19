@@ -52,4 +52,20 @@ class CategoryRepository extends BaseRepository implements CategoryRepositoryInt
         return $query->orderBy('categories.id', 'desc');
     }
 
+    /**
+     * Detail
+     *
+     * @param $id
+     * @return mixed
+     */
+    public function detail($id) {
+        return $this->_model
+                    ->select('categories.id', 'categories.name')
+                    ->with(['children' => function ($query) {
+                        return $query->select('categories.id', 'categories.name', 'categories.parent_id');
+                    }])
+                    ->where('categories.id', $id)
+                    ->first();
+    }
+
 }
