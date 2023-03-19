@@ -64,6 +64,14 @@ Route::group(['namespace' => 'api\v1'], function () {
             Route::put('update/{id}', [CategoryController::class, 'update']);
             Route::delete('delete/{id}', [CategoryController::class, 'delete']);
         });
+
+        Route::prefix('product')->group(function () {
+            Route::get('list', [ProductController::class, 'list']);
+            Route::get('show/{id}', [ProductController::class, 'show']);
+            Route::post('create', [ProductController::class, 'create']);
+            Route::put('update/{id}', [ProductController::class, 'update']);
+            Route::delete('delete/{id}', [ProductController::class, 'delete']);
+        });
     });
     
 });

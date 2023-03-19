@@ -8,7 +8,7 @@ interface CategoryRepositoryInterface extends BaseRepositoryInterface
 {
     public function getModel();
 
-    public function checkExists($key, $value, $userId);
+    public function checkExists($key, $value, $id);
 
     public function findOne($key, $value);
 
