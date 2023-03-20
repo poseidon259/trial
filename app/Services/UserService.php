@@ -288,6 +288,8 @@ class UserService
             'user_name' => $user->user_name . now(),
             'phone_number' => $user->phone_number . now(),
         ]);
+
+        $this->imageKitService->delete($user->fileId);
         $user = $this->userRepositoryInterface->delete($id);
 
         if (!$user) {

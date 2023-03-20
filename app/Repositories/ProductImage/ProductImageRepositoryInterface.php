@@ -11,4 +11,6 @@ interface ProductImageRepositoryInterface extends BaseRepositoryInterface
     public function checkExists($key, $value, $userId);
 
     public function findOne($key, $value);
+
+    public function getIdsByProductId($productId);
 }

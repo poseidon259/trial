@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests;
 
-class CreateProductRequest extends BaseRequest
+class UpdateProductRequest extends BaseRequest
 {
     /**
      * Get the validation rules that apply to the request.
@@ -23,10 +23,12 @@ class CreateProductRequest extends BaseRequest
             'product_code' => 'required|string|max:100',
             'stock' => 'required|integer',
             'images' => 'array',
+            'images.*.id' => 'required|integer',
             'images.*.image' => 'required|mimes:jpeg,png,jpg,heic|max:' . MAX_UPLOAD_FILE_SIZE,
             'images.*.type' => 'required|integer',
             'images.*.sort' => 'required|integer',
             'images.*.status' => 'required|integer',
+            'images.*.is_delete' => 'required|integer'
         ];
     }
 }

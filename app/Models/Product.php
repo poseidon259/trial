@@ -4,11 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
+
 
 class Product extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory;
 
     protected $table = 'products';
 
@@ -23,5 +23,9 @@ class Product extends Model
         'created_by',
         'updated_by',
     ];
-    
+
+    public function productImages()
+    {
+        return $this->hasMany(ProductImage::class, 'product_id', 'id');
+    }
 }

@@ -38,4 +38,14 @@ class ProductImageRepository extends BaseRepository implements ProductImageRepos
     public function findOne($key, $value) {
         return $this->_model->where($key, $value)->first();
     }
+
+    /**
+     * Get ids by product id
+     *
+     * @param $productId
+     * @return mixed
+     */
+    public function getIdsByProductId($productId) {
+        return $this->_model->where('product_id', $productId)->pluck('id');
+    }
 }
