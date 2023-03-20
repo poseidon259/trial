@@ -55,4 +55,6 @@ return [
     'delete_default_address_error' => 'Không thể xóa địa chỉ mặc định',
 
     'category_not_found' => 'Không tìm thấy danh mục',
+    'product_code_exists' => 'Mã sản phẩm đã tồn tại',
+    'product_not_found' => 'Không tìm thấy sản phẩm',
 ];

@@ -54,3 +54,8 @@ define('MAX_UPLOAD_FILE_SIZE', 102400);
 define('ADDRESS_DEFAULT', 1);
 define('ADDRESS_NOT_DEFAULT', 0);
 define('LIMIT_ADDRESS', 5);
+
+// product
+define('PRODUCT_INACTIVE', 0);
+define('PRODUCT_ACTIVE', 1);
+define('PRODUCT_PENDING', 2);
