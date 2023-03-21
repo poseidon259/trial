@@ -59,3 +59,11 @@ define('LIMIT_ADDRESS', 5);
 define('PRODUCT_INACTIVE', 0);
 define('PRODUCT_ACTIVE', 1);
 define('PRODUCT_PENDING', 2);
+
+// product image
+define('IS_DELETE', 1);
+define('IS_ADD', 2);
+
+// product favorite
+define('PRODUCT_FAVORITE_INACTIVE', 0);
+define('PRODUCT_FAVORITE_ACTIVE', 1);

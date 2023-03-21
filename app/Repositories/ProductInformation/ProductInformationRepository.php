@@ -25,8 +25,8 @@ class ProductInformationRepository extends BaseRepository implements ProductInfo
      * @param $userId
      * @return mixed
      */
-    public function checkExists($key, $value, $userId) {
-        return $this->_model->where($key, $value)->where('users.id', '!=', $userId)->first();
+    public function checkExists($key, $value, $id) {
+        return $this->_model->where($key, $value)->where('product_information.id', '!=', $id)->first();
     }
 
     /**

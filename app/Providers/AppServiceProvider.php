@@ -25,6 +25,7 @@ class AppServiceProvider extends ServiceProvider
             'Product',
             'ProductInformation',
             'ProductImage',
+            'ProductFavorite',
         ];
 
         foreach ($repositories as $repo) {

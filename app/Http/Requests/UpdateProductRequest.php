@@ -13,7 +13,7 @@ class UpdateProductRequest extends BaseRequest
     {
         return [
             'name' => 'required|string|max:255',
-            'created_by' => 'required|integer',
+            'created_by' => 'nullable|integer',
             'category_id' => 'required|integer',
             'description_list' => 'nullable|string',
             'description_detail' => 'nullable|string',
@@ -23,10 +23,12 @@ class UpdateProductRequest extends BaseRequest
             'product_code' => 'required|string|max:100',
             'stock' => 'required|integer',
             'images' => 'array',
+            'images.*.id' => 'nullable|integer',
             'images.*.image' => 'required|mimes:jpeg,png,jpg,heic|max:' . MAX_UPLOAD_FILE_SIZE,
             'images.*.type' => 'required|integer',
             'images.*.sort' => 'required|integer',
             'images.*.status' => 'required|integer',
+            'images.*.is_delete' => 'required|integer'
         ];
     }
 }

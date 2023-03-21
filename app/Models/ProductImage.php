@@ -17,7 +17,7 @@ class ProductImage extends Model
         'type',
         'sort',
         'status',
-        'created_by',
-        'updated_by',
+        'created_at',
+        'updated_at',
     ];
 }
