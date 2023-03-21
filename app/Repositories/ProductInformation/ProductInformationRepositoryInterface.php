@@ -1,18 +1,14 @@
 <?php
 
-namespace App\Repositories\Category;
+namespace App\Repositories\ProductInformation;
 
 use App\Repositories\Base\BaseRepositoryInterface;
 
-interface CategoryRepositoryInterface extends BaseRepositoryInterface
+interface ProductInformationRepositoryInterface extends BaseRepositoryInterface
 {
     public function getModel();
 
     public function checkExists($key, $value, $id);
 
     public function findOne($key, $value);
-
-    public function getListCategory($request);
-
-    public function detail($id);
 }

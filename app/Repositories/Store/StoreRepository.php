@@ -17,9 +17,9 @@ class StoreRepository extends BaseRepository implements StoreRepositoryInterface
         return $this->_model->where($key, $value)->first();
     }
 
-    public function checkExists($key, $value, $storeId)
+    public function checkExists($key, $value, $id)
     {
-        return $this->_model->where($key, $value)->where('stores.id', '!=', $storeId)->first();
+        return $this->_model->where($key, $value)->where('stores.id', '!=', $id)->first();
     }
 
     public function getListStore($request)

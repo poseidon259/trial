@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Repositories\Category;
+namespace App\Repositories\ProductImage;
 
 use App\Repositories\Base\BaseRepositoryInterface;
 
-interface CategoryRepositoryInterface extends BaseRepositoryInterface
+interface ProductImageRepositoryInterface extends BaseRepositoryInterface
 {
     public function getModel();
 
@@ -12,7 +12,5 @@ interface CategoryRepositoryInterface extends BaseRepositoryInterface
 
     public function findOne($key, $value);
 
-    public function getListCategory($request);
-
-    public function detail($id);
+    public function getIdsByProductId($productId);
 }

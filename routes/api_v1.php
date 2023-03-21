@@ -2,8 +2,10 @@
 
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CategoryController;
+use App\Http\Controllers\Api\ProductController;
+use App\Http\Controllers\Api\ProductFavoriteController;
 use App\Http\Controllers\Api\UserAddressController;
-use App\Http\Controllers\api\StoreController;
+use App\Http\Controllers\Api\StoreController;
 use App\Http\Controllers\Api\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -63,6 +65,20 @@ Route::group(['namespace' => 'api\v1'], function () {
             Route::post('create', [CategoryController::class, 'create']);
             Route::put('update/{id}', [CategoryController::class, 'update']);
             Route::delete('delete/{id}', [CategoryController::class, 'delete']);
+        });
+
+        Route::prefix('product')->group(function () {
+            Route::get('list', [ProductController::class, 'list']);
+            Route::get('show/{id}', [ProductController::class, 'show']);
+            Route::post('create', [ProductController::class, 'create']);
+            Route::post('update/{id}', [ProductController::class, 'update']);
+            Route::delete('delete/{id}', [ProductController::class, 'delete']);
+        });
+
+        Route::prefix('product_favorite')->group(function () {
+            Route::get('list', [ProductFavoriteController::class, 'list']);
+            Route::post('create', [ProductFavoriteController::class, 'create']);
+            Route::delete('delete/{id}', [ProductFavoriteController::class, 'delete']);
         });
     });
     

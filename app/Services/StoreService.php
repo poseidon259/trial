@@ -182,6 +182,8 @@ class StoreService
             return _error(null, __('messages.store_not_found'), HTTP_BAD_REQUEST);
         }
 
+        $this->imageKitService->delete($store->logo_file_id);
+        $this->imageKitService->delete($store->background_file_id);
         $store = $this->storeRepositoryInterface->delete($store);
 
         if (!$store) {
