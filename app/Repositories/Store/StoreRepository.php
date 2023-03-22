@@ -4,6 +4,7 @@ namespace App\Repositories\Store;
 
 use App\Models\Store;
 use App\Repositories\Base\BaseRepository;
+use Illuminate\Support\Facades\DB;
 
 class StoreRepository extends BaseRepository implements StoreRepositoryInterface
 {
@@ -24,6 +25,7 @@ class StoreRepository extends BaseRepository implements StoreRepositoryInterface
 
     public function getListStore($request)
     {
+        $url = getenv('IMAGEKIT_URL_ENDPOINT');
         $keyword = strtolower($request->keyword);
         $keyword = str_replace(' ', '', $keyword);
         $keyword = str_replace(',', '', $keyword);
@@ -41,8 +43,8 @@ class StoreRepository extends BaseRepository implements StoreRepositoryInterface
                 'house_number',
                 'description_list',
                 'description_detail',
-                'logo',
-                'background_image',
+                DB::raw('CONCAT("' . $url .'", logo) as logo'),
+                DB::raw('CONCAT("' . $url .'", background_image) as background_image'),
                 'status',
                 'created_at',
                 'updated_at'
