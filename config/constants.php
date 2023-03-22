@@ -67,3 +67,8 @@ define('IS_ADD', 2);
 // product favorite
 define('PRODUCT_FAVORITE_INACTIVE', 0);
 define('PRODUCT_FAVORITE_ACTIVE', 1);
+
+//banner
+define('BANNER_INACTIVE', 0);
+define('BANNER_ACTIVE', 1);
+define('BANNER_LIMIT', 5);

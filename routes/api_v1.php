@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\BannerController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\ProductFavoriteController;
@@ -79,6 +80,11 @@ Route::group(['namespace' => 'api\v1'], function () {
             Route::get('list', [ProductFavoriteController::class, 'list']);
             Route::post('create', [ProductFavoriteController::class, 'create']);
             Route::delete('delete/{id}', [ProductFavoriteController::class, 'delete']);
+        });
+
+        Route::prefix('banner')->group(function () {
+            Route::get('list', [BannerController::class, 'list']);
+            Route::post('update', [BannerController::class, 'update']);
         });
     });
     

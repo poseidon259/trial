@@ -57,4 +57,5 @@ return [
     'category_not_found' => 'Không tìm thấy danh mục',
     'product_code_exists' => 'Mã sản phẩm đã tồn tại',
     'product_not_found' => 'Không tìm thấy sản phẩm',
+    'banner_max' => 'Giới hạn số banner là ' . BANNER_LIMIT,
 ];

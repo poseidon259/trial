@@ -5,6 +5,7 @@ namespace App\Repositories\Product;
 use App\Models\Product;
 use App\Repositories\Base\BaseRepository;
 use App\Repositories\Product\ProductRepositoryInterface;
+use Illuminate\Support\Facades\DB;
 
 class ProductRepository extends BaseRepository implements ProductRepositoryInterface
 {
@@ -50,6 +51,7 @@ class ProductRepository extends BaseRepository implements ProductRepositoryInter
      */
     public function getListProduct($request)
     {
+        $url = getenv('IMAGEKIT_URL_ENDPOINT');
         $keyword = strtolower($request->keyword);
         $keyword = str_replace(' ', '', $keyword);
         $keyword = str_replace(',', '', $keyword);
@@ -73,11 +75,11 @@ class ProductRepository extends BaseRepository implements ProductRepositoryInter
                 'products.created_at',
                 'products.updated_at',
             )
-            ->with(['productImages' => function ($q) {
+            ->with(['productImages' => function ($q) use ($url) {
                 return $q->select(
                     'product_images.id',
                     'product_images.product_id',
-                    'product_images.image',
+                    DB::raw('CONCAT("' . $url . '", product_images.image) as image'),
                     'product_images.type',
                     'product_images.sort',
                     'product_images.status'
@@ -119,6 +121,8 @@ class ProductRepository extends BaseRepository implements ProductRepositoryInter
      */
     public function detail($id)
     {
+        $url = getenv('IMAGEKIT_URL_ENDPOINT');
+
         return $this->_model
                     ->join('product_information', 'products.id', '=', 'product_information.product_id')
                     ->select(
@@ -138,11 +142,11 @@ class ProductRepository extends BaseRepository implements ProductRepositoryInter
                         'products.created_at',
                         'products.updated_at',
                     )
-                    ->with(['productImages' => function ($q) {
+                    ->with(['productImages' => function ($q) use ($url) {
                         return $q->select(
                             'product_images.id',
                             'product_images.product_id',
-                            'product_images.image',
+                            DB::raw('CONCAT("' . $url . '", product_images.image) as image'),
                             'product_images.type',
                             'product_images.sort',
                             'product_images.status'
