@@ -36,4 +36,9 @@ class CommentController extends Controller
         }
     }
 
+    public function update()
+    {
+        
+    }
+
 }
