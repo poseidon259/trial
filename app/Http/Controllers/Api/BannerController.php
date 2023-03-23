@@ -15,8 +15,7 @@ class BannerController extends Controller
 
     public function __construct(
         BannerService $bannerService,
-    )
-    {
+    ) {
         $this->bannerService = $bannerService;
     }
 
@@ -34,11 +33,10 @@ class BannerController extends Controller
         }
     }
 
-    public function list ()
+    public function list()
     {
         try {
-            $banners = $this->bannerService->list();
-            return $banners;
+            return $this->bannerService->list();
         } catch (Exception $e) {
             Log::error(__METHOD__ . ' - ' . __LINE__ . ' : ' . $e->getMessage());
             return _errorSystem();

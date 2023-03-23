@@ -2,8 +2,7 @@
 
 namespace App\Http\Requests;
 
-
-class CreateBannerRequest extends BaseRequest
+class CreateCommentRequest extends BaseRequest
 {
     /**
      * Get the validation rules that apply to the request.
@@ -13,11 +12,14 @@ class CreateBannerRequest extends BaseRequest
     public function rules()
     {
         return [
+            'content' => 'required|string',
+            'rating' => 'required|integer|min:1|max:5',
+            'status' => 'nullable|integer',
+            'first_name' => 'required|string',
+            'last_name' => 'required|string',
+            'fake_avatar' => 'nullable|string',
             'images' => 'array',
             'images.*.image' => 'mimes:jpeg,png,jpg,heic|max:' . MAX_UPLOAD_FILE_SIZE,
-            'images.*.link_url' => 'nullable|string',
-            'images.*.sort' => 'nullable|integer',
-            'images.*.display' => 'nullable|integer',
         ];
     }
 }

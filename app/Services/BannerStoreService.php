@@ -2,15 +2,15 @@
 
 namespace App\Services;
 
-use App\Repositories\Banner\BannerRepositoryInterface;
+use App\Repositories\BannerStore\BannerStoreRepositoryInterface;
 
-class BannerService
+class BannerStoreService
 {
-    const BANNER_FOLDER = 'banners';
+    const BANNER_STORE_FOLDER = 'banner_stores';
     /**
-     * @var BannerRepositoryInterface
+     * @var BannerStoreRepositoryInterface
      */
-    private $bannerRepositoryInterface;
+    private $bannerStoreRepositoryInterface;
 
     /**
      * @var ImageKitService
@@ -19,15 +19,15 @@ class BannerService
     
 
     public function __construct(
-        BannerRepositoryInterface $bannerRepositoryInterface,
+        BannerStoreRepositoryInterface $bannerStoreRepositoryInterface,
         ImageKitService $imageKitService
     )
     {
-        $this->bannerRepositoryInterface = $bannerRepositoryInterface;
+        $this->bannerStoreRepositoryInterface = $bannerStoreRepositoryInterface;
         $this->imageKitService = $imageKitService;
     }
 
-    public function update($request)
+    public function update($request, $storeId)
     {
         $params = [];
         if (isset($request->images)) {
@@ -36,7 +36,7 @@ class BannerService
                 return _error(null, __('messages.banner_max'), HTTP_BAD_REQUEST);
             }
 
-            $this->deleteOldImage();
+            $this->deleteOldImage($storeId);
 
             $images = $request->images;
 
@@ -44,7 +44,7 @@ class BannerService
                 $file = $image['image'];
                 $fileName = $file->getClientOriginalName();
                 $options = [
-                    'folder' => self::BANNER_FOLDER,
+                    'folder' => self::BANNER_STORE_FOLDER,
                 ];
 
                 $uploadFile = $this->imageKitService->upload($file, $fileName, $options);
@@ -57,22 +57,23 @@ class BannerService
                     'display' => $image['display'] ?? BANNER_ACTIVE,
                     'created_at' => now(),
                     'updated_at' => now(),
+                    'store_id' => $storeId,
                 ];
             }
 
-            $this->bannerRepositoryInterface->insert($params);
+            $this->bannerStoreRepositoryInterface->insert($params);
 
             return _success(null, __('messages.create_success'), HTTP_SUCCESS);
         } else {
-                
-            $this->deleteOldImage();
+
+            $this->deleteOldImage($storeId);
             return _success(null, __('messages.create_success'), HTTP_SUCCESS);
         }
     }
 
-    public function deleteOldImage()
+    public function deleteOldImage($storeId)
     {
-        $oldBanners = $this->bannerRepositoryInterface->getListBanner();
+        $oldBanners = $this->bannerStoreRepositoryInterface->getListBanner($storeId);
 
         if (count($oldBanners) > 0) {
             $oldIds = [];
@@ -81,13 +82,13 @@ class BannerService
                 $oldIds[] = $oldBanner->id;
             }
 
-            $this->bannerRepositoryInterface->deleteIds($oldIds);
+            $this->bannerStoreRepositoryInterface->deleteIds($oldIds);
         }
     }
 
-    public function list()
+    public function list($storeId)
     {
-        $banners = $this->bannerRepositoryInterface->list();
+        $banners = $this->bannerStoreRepositoryInterface->list($storeId);
 
         return _success($banners, __('messages.success'), HTTP_SUCCESS);
     }

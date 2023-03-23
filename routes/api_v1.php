@@ -2,7 +2,9 @@
 
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\BannerController;
+use App\Http\Controllers\Api\BannerStoreController;
 use App\Http\Controllers\Api\CategoryController;
+use App\Http\Controllers\Api\CommentController;
 use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\ProductFavoriteController;
 use App\Http\Controllers\Api\UserAddressController;
@@ -74,6 +76,14 @@ Route::group(['namespace' => 'api\v1'], function () {
             Route::post('create', [ProductController::class, 'create']);
             Route::post('update/{id}', [ProductController::class, 'update']);
             Route::delete('delete/{id}', [ProductController::class, 'delete']);
+
+            Route::prefix('{productId}/comment')->group(function () {
+                Route::get('list', [CommentController::class, 'list']);
+                Route::get('show/{commentId}', [CommentController::class, 'show']);
+                Route::post('create', [CommentController::class, 'create']);
+                Route::put('update/{commentId}', [CommentController::class, 'update']);
+                Route::delete('delete/{commentId}', [CommentController::class, 'delete']);
+            });
         });
 
         Route::prefix('product_favorite')->group(function () {
@@ -86,6 +96,10 @@ Route::group(['namespace' => 'api\v1'], function () {
             Route::get('list', [BannerController::class, 'list']);
             Route::post('update', [BannerController::class, 'update']);
         });
+
+        Route::prefix('banner_store')->group(function () {
+            Route::get('{id}/list', [BannerStoreController::class, 'list']);
+            Route::post('{id}/update', [BannerStoreController::class, 'update']);
+        });
     });
-    
 });

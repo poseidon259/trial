@@ -13,8 +13,7 @@ class CategoryService
 
     public function __construct(
         CategoryRepositoryInterface $categoryRepostiryInterface
-    )
-    {
+    ) {
         $this->categoryRepostiryInterface = $categoryRepostiryInterface;
     }
 
@@ -70,7 +69,7 @@ class CategoryService
         if (!$category) {
             return _error(null, __('messages.update_error'), HTTP_BAD_REQUEST);
         }
-        
+
         return _success($category, __('messages.update_success'), HTTP_SUCCESS);
     }
 
@@ -110,13 +109,12 @@ class CategoryService
     public function show($id)
     {
         $category = $this->categoryRepostiryInterface->find($id);
-        
+
         if (!$category) {
             return _error(null, __('messages.category_not_found'), HTTP_BAD_REQUEST);
         }
-        
+
         $category = $this->categoryRepostiryInterface->detail($id);
         return _success($category, __('messages.success'), HTTP_SUCCESS);
     }
-
 }

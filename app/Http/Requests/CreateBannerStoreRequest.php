@@ -2,9 +2,9 @@
 
 namespace App\Http\Requests;
 
-
-class CreateBannerRequest extends BaseRequest
+class CreateBannerStoreRequest extends BaseRequest
 {
+
     /**
      * Get the validation rules that apply to the request.
      *
