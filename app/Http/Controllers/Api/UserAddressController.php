@@ -37,7 +37,8 @@ class UserAddressController extends Controller
         }
     }
 
-    public function update(UpdateUserAddressRequest $request, $userId, $addressId) {
+    public function update(UpdateUserAddressRequest $request, $userId, $addressId)
+    {
         DB::beginTransaction();
         try {
             $userAddress = $this->userAddressService->update($request, $userId, $addressId);
@@ -50,7 +51,8 @@ class UserAddressController extends Controller
         }
     }
 
-    public function delete($userId, $id) {
+    public function delete($userId, $id)
+    {
         DB::beginTransaction();
         try {
             $userAddress = $this->userAddressService->delete($userId, $id);
@@ -63,20 +65,20 @@ class UserAddressController extends Controller
         }
     }
 
-    public function show($userId, $id) {
+    public function show($userId, $id)
+    {
         try {
-            $userAddress = $this->userAddressService->show($userId, $id);
-            return $userAddress;
+            return $this->userAddressService->show($userId, $id);
         } catch (Exception $e) {
             Log::error(__METHOD__ . ' - ' . __LINE__ . ' : ' . $e->getMessage());
             return _errorSystem();
         }
     }
 
-    public function list($userId) {
+    public function list($userId)
+    {
         try {
-            $userAddress = $this->userAddressService->list($userId);
-            return $userAddress;
+            return $this->userAddressService->list($userId);
         } catch (Exception $e) {
             Log::error(__METHOD__ . ' - ' . __LINE__ . ' : ' . $e->getMessage());
             return _errorSystem();

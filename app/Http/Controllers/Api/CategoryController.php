@@ -20,8 +20,7 @@ class CategoryController extends Controller
 
     public function __construct(
         CategoryService $categoryService
-    )
-    {
+    ) {
         $this->categoryService = $categoryService;
     }
 
@@ -70,8 +69,7 @@ class CategoryController extends Controller
     public function list(GetListCategoryRequest $request)
     {
         try {
-            $categories = $this->categoryService->list($request);
-            return $categories;
+            return $this->categoryService->list($request);
         } catch (Exception $e) {
             Log::error(__METHOD__ . ' - ' . __LINE__ . ' : ' . $e->getMessage());
             return _errorSystem();
@@ -81,8 +79,7 @@ class CategoryController extends Controller
     public function show($id)
     {
         try {
-            $category = $this->categoryService->show($id);
-            return $category;
+            return $this->categoryService->show($id);
         } catch (Exception $e) {
             Log::error(__METHOD__ . ' - ' . __LINE__ . ' : ' . $e->getMessage());
             return _errorSystem();

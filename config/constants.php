@@ -72,3 +72,8 @@ define('PRODUCT_FAVORITE_ACTIVE', 1);
 define('BANNER_INACTIVE', 0);
 define('BANNER_ACTIVE', 1);
 define('BANNER_LIMIT', 5);
+
+// comment
+define('AVATAR_DEFAULT', 'https://ik.imagekit.io/4rdoffaxp/avt-default.jpg');
+define('COMMENT_INACTIVE', 0);
+define('COMMENT_ACTIVE', 1);

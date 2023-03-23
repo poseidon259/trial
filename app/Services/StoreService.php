@@ -90,7 +90,7 @@ class StoreService
             return _error(null, __('messages.create_error'), HTTP_BAD_REQUEST);
         }
 
-        return _success($store, __('messages.create_success'), HTTP_SUCCESS);
+        return _success(null, __('messages.create_success'), HTTP_SUCCESS);
     }
 
     public function update($request, $id)
@@ -172,7 +172,7 @@ class StoreService
             return _error(null, __('messages.update_error'), HTTP_BAD_REQUEST);
         }
 
-        return _success($store, __('messages.update_success'), HTTP_SUCCESS);
+        return _success(null, __('messages.update_success'), HTTP_SUCCESS);
     }
 
     public function delete($id) {
@@ -190,7 +190,7 @@ class StoreService
             return _error(null, __('messages.delete_error'), HTTP_BAD_REQUEST);
         }
 
-        return _success($store, __('messages.delete_success'), HTTP_SUCCESS);
+        return _success(null, __('messages.delete_success'), HTTP_SUCCESS);
     }
 
     public function show($id)

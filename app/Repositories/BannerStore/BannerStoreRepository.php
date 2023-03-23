@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Repositories\Banner;
+namespace App\Repositories\BannerStore;
 
-use App\Models\Banner;
-use App\Repositories\Banner\BannerRepositoryInterface;
+use App\Models\BannerStore;
+use App\Repositories\BannerStore\BannerStoreRepositoryInterface;
 use App\Repositories\Base\BaseRepository;
 use Illuminate\Support\Facades\DB;
 
-class BannerRepository extends BaseRepository implements BannerRepositoryInterface
+class BannerStoreRepository extends BaseRepository implements BannerStoreRepositoryInterface
 {
     /**
      * get model
@@ -15,7 +15,7 @@ class BannerRepository extends BaseRepository implements BannerRepositoryInterfa
      */
     public function getModel()
     {
-        return Banner::class;
+        return BannerStore::class;
     }
 
     /**
@@ -27,7 +27,7 @@ class BannerRepository extends BaseRepository implements BannerRepositoryInterfa
      * @return mixed
      */
     public function checkExists($key, $value, $id) {
-        return $this->_model->where($key, $value)->where('banner_general.id', '!=', $id)->first();
+        return $this->_model->where($key, $value)->where('banner_stores.id', '!=', $id)->first();
     }
 
     /**
@@ -46,8 +46,10 @@ class BannerRepository extends BaseRepository implements BannerRepositoryInterfa
      *
      * @return mixed
      */
-    public function getListBanner() {
-        return $this->_model->orderBy('sort', 'asc')->get();
+    public function getListBanner($storeId) {
+        return $this->_model
+                    ->where('store_id', $storeId)
+                    ->orderBy('sort', 'asc')->get();
     }
 
     /**
@@ -65,7 +67,7 @@ class BannerRepository extends BaseRepository implements BannerRepositoryInterfa
      *
      * @return mixed
      */
-    public function list() {
+    public function list($storeId) {
         $url = getenv('IMAGEKIT_URL_ENDPOINT');
 
         $query = $this->_model
@@ -76,6 +78,7 @@ class BannerRepository extends BaseRepository implements BannerRepositoryInterfa
                     'created_at',
                     'updated_at')
                 ->where('display', BANNER_ACTIVE)
+                ->where('store_id', $storeId)
                 ->orderBy('sort', 'asc')->get();
 
         return $query;
