@@ -32,10 +32,10 @@ return [
     'code_expired' => 'Mã xác nhận đã hết hạn',
     'update_password_success' => 'Cập nhật mật khẩu thành công',
     'update_password_fail' => 'Cập nhật mật khẩu thất bại',
-    
+
     'success' => 'Thành công',
     'fail' => 'Thất bại',
-    
+
     'create_error' => 'Tạo mới thất bại',
     'create_success' => 'Tạo mới thành công',
     'update_success' => 'Cập nhật thông tin thành công',
@@ -58,4 +58,5 @@ return [
     'product_code_exists' => 'Mã sản phẩm đã tồn tại',
     'product_not_found' => 'Không tìm thấy sản phẩm',
     'banner_max' => 'Giới hạn số banner là ' . BANNER_LIMIT,
+    'comment_not_found' => 'Không tìm thấy bình luận',
 ];

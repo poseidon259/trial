@@ -24,7 +24,8 @@ class CommentImageRepository extends BaseRepository implements CommentImageRepos
      * @param $userId
      * @return mixed
      */
-    public function checkExists($key, $value, $id) {
+    public function checkExists($key, $value, $id)
+    {
         return $this->_model->where($key, $value)->where('banner_general.id', '!=', $id)->first();
     }
 
@@ -35,7 +36,30 @@ class CommentImageRepository extends BaseRepository implements CommentImageRepos
      * @param $value
      * @return mixed
      */
-    public function findOne($key, $value) {
+    public function findOne($key, $value)
+    {
         return $this->_model->where($key, $value)->first();
+    }
+
+    /**
+     * Get list by comment id
+     *
+     * @param $commentId
+     * @return mixed
+     */
+    public function getListByCommentId($commentId)
+    {
+        return $this->_model->where('comment_id', $commentId)->get();
+    }
+
+    /**
+     * Delete ids
+     *
+     * @param $ids
+     * @return mixed
+     */
+    public function deleteIds($ids)
+    {
+        return $this->_model->whereIn('id', $ids)->delete();
     }
 }

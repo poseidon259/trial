@@ -16,13 +16,12 @@ class BannerService
      * @var ImageKitService
      */
     private $imageKitService;
-    
+
 
     public function __construct(
         BannerRepositoryInterface $bannerRepositoryInterface,
         ImageKitService $imageKitService
-    )
-    {
+    ) {
         $this->bannerRepositoryInterface = $bannerRepositoryInterface;
         $this->imageKitService = $imageKitService;
     }
@@ -64,7 +63,7 @@ class BannerService
 
             return _success(null, __('messages.create_success'), HTTP_SUCCESS);
         } else {
-                
+
             $this->deleteOldImage();
             return _success(null, __('messages.create_success'), HTTP_SUCCESS);
         }
@@ -91,5 +90,4 @@ class BannerService
 
         return _success($banners, __('messages.success'), HTTP_SUCCESS);
     }
-
 }

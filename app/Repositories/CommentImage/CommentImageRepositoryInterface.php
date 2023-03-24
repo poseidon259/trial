@@ -11,4 +11,8 @@ interface CommentImageRepositoryInterface extends BaseRepositoryInterface
     public function checkExists($key, $value, $id);
 
     public function findOne($key, $value);
+
+    public function getListByCommentId($commentId);
+
+    public function deleteIds($ids);
 }
