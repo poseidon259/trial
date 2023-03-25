@@ -21,4 +21,9 @@ class Comment extends Model
         'last_name',
         'fake_avatar',
     ];
+
+    public function commentImages()
+    {
+        return $this->hasMany(CommentImage::class, 'comment_id', 'id');
+    }
 }

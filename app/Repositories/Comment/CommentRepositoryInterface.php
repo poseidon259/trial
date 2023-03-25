@@ -11,4 +11,8 @@ interface CommentRepositoryInterface extends BaseRepositoryInterface
     public function checkExists($key, $value, $id);
 
     public function findOne($key, $value);
+
+    public function detail($id);
+
+    public function getListCommentByProductId($request, $productId);
 }

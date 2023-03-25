@@ -26,7 +26,8 @@ class BannerRepository extends BaseRepository implements BannerRepositoryInterfa
      * @param $userId
      * @return mixed
      */
-    public function checkExists($key, $value, $id) {
+    public function checkExists($key, $value, $id)
+    {
         return $this->_model->where($key, $value)->where('banner_general.id', '!=', $id)->first();
     }
 
@@ -37,7 +38,8 @@ class BannerRepository extends BaseRepository implements BannerRepositoryInterfa
      * @param $value
      * @return mixed
      */
-    public function findOne($key, $value) {
+    public function findOne($key, $value)
+    {
         return $this->_model->where($key, $value)->first();
     }
 
@@ -46,7 +48,8 @@ class BannerRepository extends BaseRepository implements BannerRepositoryInterfa
      *
      * @return mixed
      */
-    public function getListBanner() {
+    public function getListBanner()
+    {
         return $this->_model->orderBy('sort', 'asc')->get();
     }
 
@@ -56,7 +59,8 @@ class BannerRepository extends BaseRepository implements BannerRepositoryInterfa
      * @param $ids
      * @return mixed
      */
-    public function deleteIds($ids) {
+    public function deleteIds($ids)
+    {
         return $this->_model->whereIn('id', $ids)->delete();
     }
 
@@ -65,19 +69,19 @@ class BannerRepository extends BaseRepository implements BannerRepositoryInterfa
      *
      * @return mixed
      */
-    public function list() {
+    public function list()
+    {
         $url = getenv('IMAGEKIT_URL_ENDPOINT');
 
-        $query = $this->_model
-                ->select(
-                    'id',
-                    DB::raw('CONCAT("'.$url.'", image) as image'),
-                    'sort',
-                    'created_at',
-                    'updated_at')
-                ->where('display', BANNER_ACTIVE)
-                ->orderBy('sort', 'asc')->get();
-
-        return $query;
+        return $this->_model
+            ->select(
+                'id',
+                DB::raw('CONCAT("' . $url . '", image) as image'),
+                'sort',
+                'created_at',
+                'updated_at'
+            )
+            ->where('display', BANNER_ACTIVE)
+            ->orderBy('sort', 'asc')->get();
     }
 }

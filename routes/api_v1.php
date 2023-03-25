@@ -81,7 +81,7 @@ Route::group(['namespace' => 'api\v1'], function () {
                 Route::get('list', [CommentController::class, 'list']);
                 Route::get('show/{commentId}', [CommentController::class, 'show']);
                 Route::post('create', [CommentController::class, 'create']);
-                Route::put('update/{commentId}', [CommentController::class, 'update']);
+                Route::post('update/{commentId}', [CommentController::class, 'update']);
                 Route::delete('delete/{commentId}', [CommentController::class, 'delete']);
             });
         });
