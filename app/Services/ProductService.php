@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Repositories\MasterField\MasterFieldRepositoryInterface;
 use App\Repositories\Product\ProductRepositoryInterface;
 use App\Repositories\ProductImage\ProductImageRepositoryInterface;
 use App\Repositories\ProductInformation\ProductInformationRepositoryInterface;
@@ -29,17 +30,24 @@ class ProductService
      */
     private $imageKitService;
 
+    /**
+     * @var MasterFieldRepositoryInterface
+     */
+    private $masterFieldRepositoryInterface;
+
     public function __construct(
         ProductRepositoryInterface $productRepositoryInterface,
         ProductInformationRepositoryInterface $productInformationRepositoryInterface,
         ProductImageRepositoryInterface $productImageRepositoryInterface,
-        ImageKitService $imageKitService
+        ImageKitService $imageKitService,
+        MasterFieldRepositoryInterface $masterFieldRepositoryInterface
     )
     {
         $this->productRepositoryInterface = $productRepositoryInterface;
         $this->productInformationRepositoryInterface = $productInformationRepositoryInterface;
         $this->productImageRepositoryInterface = $productImageRepositoryInterface;
         $this->imageKitService = $imageKitService;
+        $this->masterFieldRepositoryInterface = $masterFieldRepositoryInterface;
     }
 
     public function create($request, $user)
@@ -67,11 +75,11 @@ class ProductService
             'product_code' => $request->product_code,
             'stock' => $request->stock,
         ];
-        $productInformation = $this->productInformationRepositoryInterface->create($newProductInformation);
+        $this->productInformationRepositoryInterface->create($newProductInformation);
 
         if (isset($request->images)) {
             $images = [];
-            foreach ($request->images as $index => $image) {
+            foreach ($request->images as $image) {
                 $file = $image['image'];
                 $fileName = $file->getClientOriginalName();
                 $options = [
@@ -89,7 +97,34 @@ class ProductService
                 ];
             }
         }
-        $productImages = $this->productImageRepositoryInterface->insert($images);
+        $this->productImageRepositoryInterface->insert($images);
+
+        if (isset($request->master_fields)) {
+
+            foreach ($request->master_fields as $masterField) {
+                $parentParams = [
+                    'name' => $masterField['name'],
+                    'product_id' => $product->id,
+                ];
+
+                $field = $this->masterFieldRepositoryInterface->create($parentParams);
+
+                if (isset($masterField['childs'])) {
+                    foreach ($masterField['childs'] as $child) {
+                        $childParams[] = [
+                            'name' => $child['name'],
+                            'parent_id' => $field->id,
+                            'sale_price' => $child['sale_price'],
+                            'origin_price' => $child['origin_price'],
+                            'stock' => $child['stock'],
+                            'created_at' => now(),
+                            'updated_at' => now(),
+                        ];
+                    }
+                    $this->masterFieldRepositoryInterface->insert($childParams);
+                }
+            }
+        }
         
         return _success(null, __('messages.create_success'), HTTP_SUCCESS);
     }

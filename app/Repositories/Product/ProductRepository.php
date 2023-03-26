@@ -84,7 +84,21 @@ class ProductRepository extends BaseRepository implements ProductRepositoryInter
                     'product_images.sort',
                     'product_images.status'
                 );
-            }]);
+            }, 'masterFields' => function ($q) {
+                return $q->select(
+                    'master_fields.id',
+                    'master_fields.name',
+                )->with(['childs' => function ($qc) {
+                    return $qc->select(
+                        'master_fields.id',
+                        'master_fields.name',
+                        'master_fields.sale_price',
+                        'master_fields.origin_price',
+                        'master_fields.stock',
+                    );
+                }]);
+            }])
+            ;
 
         if ($request->keyword) {
             $query->whereRaw("LOWER(CONCAT(products.name, product_information.product_code)) LIKE  '%{$keyword}%'");
@@ -151,6 +165,21 @@ class ProductRepository extends BaseRepository implements ProductRepositoryInter
                             'product_images.sort',
                             'product_images.status'
                         );
+                    }, 'masterFields' => function ($q) {
+                        return $q->select(
+                            'master_fields.id',
+                            'master_fields.name',
+                            'master_fields.product_id',
+                        )->with(['childs' => function ($qc) {
+                            return $qc->select(
+                                'master_fields.id',
+                                'master_fields.name',
+                                'master_fields.parent_id',
+                                'master_fields.sale_price',
+                                'master_fields.origin_price',
+                                'master_fields.stock',
+                            );
+                        }]);
                     }])
                     ->where('products.id', $id)
                     ->first()

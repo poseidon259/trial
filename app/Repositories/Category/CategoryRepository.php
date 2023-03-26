@@ -25,7 +25,7 @@ class CategoryRepository extends BaseRepository implements CategoryRepositoryInt
      * @return mixed
      */
     public function checkExists($key, $value, $id) {
-        return $this->_model->where($key, $value)->where('users.id', '!=', $id)->first();
+        return $this->_model->where($key, $value)->where('categories.id', '!=', $id)->first();
     }
 
     /**
@@ -47,7 +47,11 @@ class CategoryRepository extends BaseRepository implements CategoryRepositoryInt
      * @return mixed
      */
     public function getListCategory($request) {
-        $query = $this->_model->select('*');
+        $query = $this->_model
+                    ->select(
+                        'id',
+                        'name'
+                    );
 
         return $query->orderBy('categories.id', 'desc');
     }
@@ -68,4 +72,5 @@ class CategoryRepository extends BaseRepository implements CategoryRepositoryInt
                     ->first();
     }
 
+    
 }

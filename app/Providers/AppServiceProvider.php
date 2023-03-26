@@ -22,6 +22,7 @@ class AppServiceProvider extends ServiceProvider
             'Store',
             'UserAddress',
             'Category',
+            'CategoryChild',
             'Product',
             'ProductInformation',
             'ProductImage',
@@ -30,6 +31,7 @@ class AppServiceProvider extends ServiceProvider
             'BannerStore',
             'Comment',
             'CommentImage',
+            'MasterField',  
         ];
 
         foreach ($repositories as $repo) {

@@ -13,7 +13,6 @@ class UpdateCategoryRequest extends BaseRequest
     {
         return [
             'name' => 'required|string|max:255',
-            'parent_id' => 'nullable|integer',
         ];
     }
 }

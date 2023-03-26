@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\BannerController;
 use App\Http\Controllers\Api\BannerStoreController;
+use App\Http\Controllers\Api\CategoryChildController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\CommentController;
 use App\Http\Controllers\Api\ProductController;
@@ -68,6 +69,12 @@ Route::group(['namespace' => 'api\v1'], function () {
             Route::post('create', [CategoryController::class, 'create']);
             Route::put('update/{id}', [CategoryController::class, 'update']);
             Route::delete('delete/{id}', [CategoryController::class, 'delete']);
+
+            Route::prefix('{categoryId}/child')->group(function () {
+                Route::post('create', [CategoryChildController::class, 'create']);
+                Route::put('update/{id}', [CategoryChildController::class, 'update']);
+                Route::delete('delete/{id}', [CategoryChildController::class, 'delete']);
+            });
         });
 
         Route::prefix('product')->group(function () {
