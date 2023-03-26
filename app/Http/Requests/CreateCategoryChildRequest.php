@@ -2,9 +2,8 @@
 
 namespace App\Http\Requests;
 
-class CreateCategoryRequest extends BaseRequest
+class CreateCategoryChildRequest extends BaseRequest
 {
-
     /**
      * Get the validation rules that apply to the request.
      *
@@ -13,7 +12,8 @@ class CreateCategoryRequest extends BaseRequest
     public function rules()
     {
         return [
-            'name' => 'required|string|max:255',
+            'names' => 'array',
+            'names.*' => 'required|string',
         ];
     }
 }

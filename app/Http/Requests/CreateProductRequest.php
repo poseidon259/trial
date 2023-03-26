@@ -27,6 +27,14 @@ class CreateProductRequest extends BaseRequest
             'images.*.type' => 'required|integer',
             'images.*.sort' => 'required|integer',
             'images.*.status' => 'required|integer',
+            'master_fields' => 'array',
+            'master_fields.*.name' => 'required|string|max:255',
+            'master_fields.*.childs' => 'required|array',
+            'master_fields.*.childs.*.name' => 'required|string|max:255',
+            'master_fields.*.childs.*.sale_price' => 'required|integer',
+            'master_fields.*.childs.*.origin_price' => 'required|integer|gt:master_fields.*.childs.*.sale_price',
+            'master_fields.*.childs.*.stock' => 'required|integer',
+            'master_fields.*.childs.*.product_code' => 'nullable|string|max:100',
         ];
     }
 }

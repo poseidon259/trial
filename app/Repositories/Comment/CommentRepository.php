@@ -27,7 +27,7 @@ class CommentRepository extends BaseRepository implements CommentRepositoryInter
      */
     public function checkExists($key, $value, $id)
     {
-        return $this->_model->where($key, $value)->where('banner_general.id', '!=', $id)->first();
+        return $this->_model->where($key, $value)->where('comments.id', '!=', $id)->first();
     }
 
     /**

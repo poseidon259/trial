@@ -19,19 +19,15 @@ class CategoryService
 
     public function create($request)
     {
+        $checkExists = $this->categoryRepostiryInterface->findOne('name', $request->name);
+
+        if ($checkExists) {
+            return _error(null, __('messages.category_exists'), HTTP_BAD_REQUEST);
+        }
+
         $params = [
             'name' => $request->name,
         ];
-
-        if ($request->parent_id) {
-            $parent = $this->categoryRepostiryInterface->find($request->parent_id);
-
-            if (!$parent) {
-                return _error(null, __('messages.category_not_found'), HTTP_BAD_REQUEST);
-            }
-
-            $params['parent_id'] = $parent->id;
-        }
 
         $category = $this->categoryRepostiryInterface->create($params);
 
@@ -39,7 +35,7 @@ class CategoryService
             return _error(null, __('messages.create_error'), HTTP_BAD_REQUEST);
         }
 
-        return _success($category, __('messages.create_success'), HTTP_SUCCESS);
+        return _success(null, __('messages.create_success'), HTTP_SUCCESS);
     }
 
     public function update($request, $id)
@@ -50,19 +46,15 @@ class CategoryService
             return _error(null, __('messages.category_not_found'), HTTP_BAD_REQUEST);
         }
 
+        $checkExists = $this->categoryRepostiryInterface->checkExists('name', $request->name, $id);
+
+        if ($checkExists) {
+            return _error(null, __('messages.category_exists'), HTTP_BAD_REQUEST);
+        }
+
         $params = [
             'name' => $request->name,
         ];
-
-        if ($request->parent_id) {
-            $parent = $this->categoryRepostiryInterface->find($request->parent_id);
-
-            if (!$parent) {
-                return _error(null, __('messages.category_not_found'), HTTP_BAD_REQUEST);
-            }
-
-            $params['parent_id'] = $parent->id;
-        }
 
         $category = $this->categoryRepostiryInterface->update($id, $params);
 
@@ -70,7 +62,7 @@ class CategoryService
             return _error(null, __('messages.update_error'), HTTP_BAD_REQUEST);
         }
 
-        return _success($category, __('messages.update_success'), HTTP_SUCCESS);
+        return _success(null, __('messages.update_success'), HTTP_SUCCESS);
     }
 
     public function delete($id)
