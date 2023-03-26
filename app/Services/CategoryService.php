@@ -79,7 +79,7 @@ class CategoryService
             return _error(null, __('messages.delete_error'), HTTP_BAD_REQUEST);
         }
 
-        return _success($category, __('messages.delete_success'), HTTP_SUCCESS);
+        return _success(null, __('messages.delete_success'), HTTP_SUCCESS);
     }
 
     public function list($request)
