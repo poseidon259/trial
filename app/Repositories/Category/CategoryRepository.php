@@ -65,8 +65,8 @@ class CategoryRepository extends BaseRepository implements CategoryRepositoryInt
     public function detail($id) {
         return $this->_model
                     ->select('categories.id', 'categories.name')
-                    ->with(['children' => function ($query) {
-                        return $query->select('categories.id', 'categories.name', 'categories.parent_id');
+                    ->with(['categoryChildren' => function ($query) {
+                        return $query->select('category_child.id', 'category_child.name', 'category_child.category_id');
                     }])
                     ->where('categories.id', $id)
                     ->first();
