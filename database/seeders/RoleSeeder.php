@@ -14,7 +14,6 @@ class RoleSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('roles')->truncate();
         $data = [
             [
                 'id' => 1,
@@ -26,6 +25,10 @@ class RoleSeeder extends Seeder
             ],
             [
                 'id' => 3,
+                'name' => 'EMP'
+            ],
+            [
+                'id' => 4,
                 'name' => 'CUSTOMER'
             ],
         ];

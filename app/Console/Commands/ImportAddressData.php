@@ -35,10 +35,6 @@ class ImportAddressData extends Command
      */
     public function handle()
     {
-        DB::table('provinces')->truncate();
-        DB::table('districts')->truncate();
-        DB::table('wards')->truncate();
-
         DB::beginTransaction();
         try {
 

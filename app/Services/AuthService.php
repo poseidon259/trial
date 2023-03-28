@@ -47,6 +47,10 @@ class AuthService
                 return _error(null, __('messages.wrong_password_or_email'), HTTP_BAD_REQUEST);
             }
 
+            if (is_null($user->email_verified_at)) {
+                return _error(null, __('messages.email_not_verified'), HTTP_BAD_REQUEST);
+            }
+
             if ($user->status == INACTIVE) {
                 return _error(null, __('messages.user_inactive'), HTTP_BAD_REQUEST);
             }

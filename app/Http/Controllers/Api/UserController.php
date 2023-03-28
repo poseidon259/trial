@@ -94,7 +94,8 @@ class UserController extends Controller
     {
         DB::beginTransaction();
         try {
-            $user = $this->userService->delete($id);
+            $userLogin = Auth::user();
+            $user = $this->userService->delete($id, $userLogin);
             DB::commit();
             return $user;
         } catch (Exception $e) {
@@ -133,7 +134,8 @@ class UserController extends Controller
     {
         DB::beginTransaction();
         try {
-            $user = $this->userService->changeStatus($request, $id);
+            $userLogin = Auth::user();
+            $user = $this->userService->changeStatus($request, $id, $userLogin);
             DB::commit();
             return $user;
         } catch (Exception $e) {
