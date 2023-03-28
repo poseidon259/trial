@@ -77,3 +77,9 @@ define('BANNER_LIMIT', 5);
 define('AVATAR_DEFAULT', 'https://ik.imagekit.io/4rdoffaxp/avt-default.jpg');
 define('COMMENT_INACTIVE', 0);
 define('COMMENT_ACTIVE', 1);
+
+//slug role
+define('SLUG_PERMISSION_ADMIN', 'admin');
+define('SLUG_PERMISSION_STORE', 'store');
+define('SLUG_PERMISSION_EMP', 'employee');
+define('SLUG_PERMISSION_USER', 'user');

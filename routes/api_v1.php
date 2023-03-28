@@ -37,30 +37,29 @@ Route::group(['namespace' => 'api\v1'], function () {
         Route::post('update_profile', [UserController::class, 'updateProfile']);
         Route::put('change_password', [UserController::class, 'updatePassword']);
 
-        Route::prefix('user')->group(function () {
-            Route::get('show/{id}', [UserController::class, 'show']);
-            Route::post('create', [UserController::class, 'create']);
-            Route::post('update/{id}', [UserController::class, 'update']);
-            Route::delete('delete/{id}', [UserController::class, 'delete']);
-            Route::get('list', [UserController::class, 'list']);
-            Route::put('{id}/change_status', [UserController::class, 'changeStatus']);
-            Route::put('change_password', [UserController::class, 'updatePassword']);
+        Route::prefix('user_address')->group(function () {
+            Route::get('list', [UserAddressController::class, 'list']);
+            Route::get('show/{addressId}', [UserAddressController::class, 'show']);
+            Route::post('create', [UserAddressController::class, 'create']);
+            Route::put('update/{addressId}', [UserAddressController::class, 'update']);
+            Route::delete('delete/{addressId}', [UserAddressController::class, 'delete']);
+        });
 
-            Route::prefix('{userId}/address')->group(function () {
-                Route::get('list', [UserAddressController::class, 'list']);
-                Route::get('show/{addressId}', [UserAddressController::class, 'show']);
-                Route::post('create', [UserAddressController::class, 'create']);
-                Route::put('update/{addressId}', [UserAddressController::class, 'update']);
-                Route::delete('delete/{addressId}', [UserAddressController::class, 'delete']);
-            });
+        Route::prefix('user')->group(function () {
+            Route::get('show/{id}', [UserController::class, 'show'])->middleware('permission:admin');
+            Route::post('create', [UserController::class, 'create'])->middleware('permission:admin');
+            Route::post('update/{id}', [UserController::class, 'update'])->middleware('permission:admin');
+            Route::delete('delete/{id}', [UserController::class, 'delete'])->middleware('permission:admin');
+            Route::get('list', [UserController::class, 'list'])->middleware('permission:admin');
+            Route::put('{id}/change_status', [UserController::class, 'changeStatus'])->middleware('permission:admin');
         });
 
         Route::prefix('store')->group(function () {
-            Route::get('list', [StoreController::class, 'list']);
-            Route::get('show/{id}', [StoreController::class, 'show']);
-            Route::post('create', [StoreController::class, 'create']);
-            Route::post('update/{id}', [StoreController::class, 'update']);
-            Route::delete('delete/{id}', [StoreController::class, 'delete']);
+            Route::get('list', [StoreController::class, 'list'])->middleware('permission:admin');
+            Route::get('show/{id}', [StoreController::class, 'show'])->middleware('permission:admin');
+            Route::post('create', [StoreController::class, 'create'])->middleware('permission:admin');
+            Route::post('update/{id}', [StoreController::class, 'update'])->middleware('permission:admin');
+            Route::delete('delete/{id}', [StoreController::class, 'delete'])->middleware('permission:admin');
         });
 
         Route::prefix('category')->group(function () {

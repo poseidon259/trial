@@ -184,7 +184,8 @@ class StoreService
 
         $this->imageKitService->delete($store->logo_file_id);
         $this->imageKitService->delete($store->background_file_id);
-        $store = $this->storeRepositoryInterface->delete($store);
+
+        $store = $this->storeRepositoryInterface->delete($store->id);
 
         if (!$store) {
             return _error(null, __('messages.delete_error'), HTTP_BAD_REQUEST);

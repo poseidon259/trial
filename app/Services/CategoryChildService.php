@@ -66,6 +66,12 @@ class CategoryChildService
             return _error(null, __('messages.category_not_found'), HTTP_BAD_REQUEST);
         }
 
+        $childCategory = $this->categoryChildRepostiryInterface->find($id);
+
+        if (!$childCategory) {
+            return _error(null, __('messages.category_not_found'), HTTP_BAD_REQUEST);
+        }
+
         $checkExistsName = $this->categoryChildRepostiryInterface->findOne('name', $request->name, $categoryId, $id );
 
         if ($checkExistsName) {

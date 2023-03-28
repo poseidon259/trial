@@ -66,4 +66,5 @@ return [
     'delete_admin_error' => 'Không thể xóa tài khoản admin',
     'delete_user_login_error' => 'Không thể xóa tài khoản đang đăng nhập',
     'change_status_user_login_error' => 'Không thể thay đổi trạng thái tài khoản đang đăng nhập',
+    'category_has_product_cant_delete' => 'Danh mục có sản phẩm không thể xóa',
 ];
