@@ -29,14 +29,14 @@ class UserService
         UserRepositoryInterface $userRepositoryInterface,
         MailService $mailService,
         ImageKitService $imageKitService
-    )
-    {
+    ) {
         $this->userRepositoryInterface = $userRepositoryInterface;
         $this->mailService = $mailService;
         $this->imageKitService = $imageKitService;
     }
 
-    public function updateProfile($request, $user) {
+    public function updateProfile($request, $user)
+    {
 
         $checkExistsEmail = $this->userRepositoryInterface->checkExists('email', $request->email, $user->id);
         if ($checkExistsEmail) {
@@ -99,7 +99,8 @@ class UserService
         return _success($newUser, __('messages.update_success'), HTTP_SUCCESS);
     }
 
-    public function show($id) {
+    public function show($id)
+    {
         $user = $this->userRepositoryInterface->find($id);
 
         if (!$user) {
@@ -109,7 +110,8 @@ class UserService
         return _success($user, __('messages.success'), HTTP_SUCCESS);
     }
 
-    public function create($request) {
+    public function create($request)
+    {
 
         $checkExistsEmail = $this->userRepositoryInterface->findOne('email', $request->email);
         if ($checkExistsEmail) {
@@ -147,6 +149,7 @@ class UserService
             'gender' => $request->gender,
             'user_name' => $request->user_name,
             'status' => $request->status,
+            'email_verified_at' => now(),
         ];
 
         if (isset($request->avatar)) {
@@ -183,22 +186,27 @@ class UserService
             'mail.create_user'
         );
 
-        return _success($user, __('messages.create_success'), HTTP_SUCCESS);
+        return _success(null, __('messages.create_success'), HTTP_SUCCESS);
     }
-    
-    public function update($request, $id) {
 
-        $checkExistsEmail = $this->userRepositoryInterface->findOne('email', $request->email);
+    public function update($request, $id)
+    {
+        $user = $this->userRepositoryInterface->find($id);
+        if (!$user) {
+            return _error(null, __('messages.user_not_found'), HTTP_NOT_FOUND);
+        }
+
+        $checkExistsEmail = $this->userRepositoryInterface->checkExists('email', $request->email, $id);
         if ($checkExistsEmail) {
             return _error(null, __('messages.email_exists'), HTTP_BAD_REQUEST);
         }
 
-        $checkExistsUserName = $this->userRepositoryInterface->findOne('user_name', $request->user_name);
+        $checkExistsUserName = $this->userRepositoryInterface->checkExists('user_name', $request->user_name, $id);
         if ($checkExistsUserName) {
             return _error(null, __('messages.user_name_exists'), HTTP_BAD_REQUEST);
         }
 
-        $checkExistsPhoneNumber = $this->userRepositoryInterface->findOne('phone_number', $request->phone_number);
+        $checkExistsPhoneNumber = $this->userRepositoryInterface->checkExists('phone_number', $request->phone_number, $id);
         if ($checkExistsPhoneNumber) {
             return _error(null, __('messages.phone_number_exists'), HTTP_BAD_REQUEST);
         }
@@ -227,6 +235,9 @@ class UserService
             'gender' => $request->gender,
             'role_id' => $request->role_id,
             'password' => Hash::make($password),
+            'email' => $request->email,
+            'user_name' => $request->user_name,
+            'phone_number' => $request->phone_number,
         ];
 
         if (isset($request->avatar)) {
@@ -276,11 +287,20 @@ class UserService
         return _success($user, __('messages.update_success'), HTTP_SUCCESS);
     }
 
-    public function delete($id) {
+    public function delete($id, $userLogin)
+    {
         $user = $this->userRepositoryInterface->find($id);
 
         if (!$user) {
             return _error(null, __('messages.user_not_found'), HTTP_NOT_FOUND);
+        }
+
+        if ($userLogin->id == $id) {
+            return _error(null, __('messages.delete_user_login_error'), HTTP_BAD_REQUEST);
+        }
+
+        if ($user->role_id == ROLE_ADMIN) {
+            return _error(null, __('messages.delete_admin_error'), HTTP_BAD_REQUEST);
         }
 
         $this->userRepositoryInterface->update($id, [
@@ -299,7 +319,8 @@ class UserService
         return _success($user, __('messages.delete_success'), HTTP_SUCCESS);
     }
 
-    public function list($request) {
+    public function list($request)
+    {
         $limit = $request->limit ?? LIMIT;
         $page = $request->page ?? PAGE;
 
@@ -314,7 +335,8 @@ class UserService
         ];
     }
 
-    public function updatePassword($request, $user) {
+    public function updatePassword($request, $user)
+    {
         $oldPassword = $request->old_password;
 
         if (!Hash::check($oldPassword, $user->password)) {
@@ -334,11 +356,16 @@ class UserService
         return _success($user, __('messages.update_success'), HTTP_SUCCESS);
     }
 
-    public function changeStatus($request, $id) {
+    public function changeStatus($request, $id, $userLogin)
+    {
         $user = $this->userRepositoryInterface->find($id);
 
         if (!$user) {
             return _error(null, __('messages.user_not_found'), HTTP_NOT_FOUND);
+        }
+
+        if ($userLogin->id == $id) {
+            return _error(null, __('messages.change_status_user_login_error'), HTTP_BAD_REQUEST);
         }
 
         $user = $this->userRepositoryInterface->update($id, [
@@ -352,7 +379,8 @@ class UserService
         return _success($user, __('messages.update_success'), HTTP_SUCCESS);
     }
 
-    public function profile($user) {
+    public function profile($user)
+    {
         $user = $this->userRepositoryInterface->find($user->id);
 
         if (!$user) {
