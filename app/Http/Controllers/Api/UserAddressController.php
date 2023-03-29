@@ -7,6 +7,7 @@ use App\Http\Requests\CreateUserAddressRequest;
 use App\Http\Requests\UpdateUserAddressRequest;
 use App\Services\UserAddressService;
 use Exception;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
@@ -23,11 +24,12 @@ class UserAddressController extends Controller
         $this->userAddressService = $userAddressService;
     }
 
-    public function create(CreateUserAddressRequest $request, $userId)
+    public function create(CreateUserAddressRequest $request)
     {
         DB::beginTransaction();
         try {
-            $userAddress = $this->userAddressService->create($request, $userId);
+            $user = Auth::user();
+            $userAddress = $this->userAddressService->create($request, $user);
             DB::commit();
             return $userAddress;
         } catch (Exception $e) {
@@ -37,11 +39,12 @@ class UserAddressController extends Controller
         }
     }
 
-    public function update(UpdateUserAddressRequest $request, $userId, $addressId)
+    public function update(UpdateUserAddressRequest $request, $addressId)
     {
         DB::beginTransaction();
         try {
-            $userAddress = $this->userAddressService->update($request, $userId, $addressId);
+            $user = Auth::user();
+            $userAddress = $this->userAddressService->update($request, $user, $addressId);
             DB::commit();
             return $userAddress;
         } catch (Exception $e) {
@@ -65,20 +68,21 @@ class UserAddressController extends Controller
         }
     }
 
-    public function show($userId, $id)
+    public function show($id)
     {
         try {
-            return $this->userAddressService->show($userId, $id);
+            return $this->userAddressService->show($id);
         } catch (Exception $e) {
             Log::error(__METHOD__ . ' - ' . __LINE__ . ' : ' . $e->getMessage());
             return _errorSystem();
         }
     }
 
-    public function list($userId)
+    public function list()
     {
         try {
-            return $this->userAddressService->list($userId);
+            $user = Auth::user();
+            return $this->userAddressService->list($user);
         } catch (Exception $e) {
             Log::error(__METHOD__ . ' - ' . __LINE__ . ' : ' . $e->getMessage());
             return _errorSystem();

@@ -185,4 +185,26 @@ class ProductRepository extends BaseRepository implements ProductRepositoryInter
                     ->first()
                     ;
     }
+
+    /**
+     * count product by category
+     *
+     * @param $categoryId
+     * @return mixed
+     */
+    public function countByCategory($categoryId)
+    {
+        return $this->_model->where('category_id', $categoryId)->count();
+    }
+
+    /**
+     * count product by child category
+     *
+     * @param $childCategoryId
+     * @return mixed
+     */
+    public function countByChildCategory($childCategoryId)
+    {
+        return $this->_model->where('child_category_id', $childCategoryId)->count();
+    }
 }

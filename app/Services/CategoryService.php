@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Repositories\Category\CategoryRepositoryInterface;
+use App\Repositories\Product\ProductRepositoryInterface;
 
 class CategoryService
 {
@@ -11,10 +12,17 @@ class CategoryService
      */
     private $categoryRepostiryInterface;
 
+    /**
+     * @var ProductRepositoryInterface
+     */
+    private $productRepositoryInterface;
+
     public function __construct(
-        CategoryRepositoryInterface $categoryRepostiryInterface
+        CategoryRepositoryInterface $categoryRepostiryInterface,
+        ProductRepositoryInterface $productRepositoryInterface
     ) {
         $this->categoryRepostiryInterface = $categoryRepostiryInterface;
+        $this->productRepositoryInterface = $productRepositoryInterface;
     }
 
     public function create($request)
@@ -71,6 +79,12 @@ class CategoryService
 
         if (!$checkExists) {
             return _error(null, __('messages.category_not_found'), HTTP_BAD_REQUEST);
+        }
+
+        $products = $this->productRepositoryInterface->countByCategory($id);
+
+        if ($products > 0) {
+            return _error(null, __('messages.category_has_product_cant_delete'), HTTP_BAD_REQUEST);
         }
 
         $category = $this->categoryRepostiryInterface->delete($id);

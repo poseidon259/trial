@@ -17,16 +17,16 @@ class UserAddressService
         $this->userAddressRepositoryInterface = $userAddressRepositoryInterface;
     }
 
-    public function create($request, $userId)
+    public function create($request, $user)
     {
-        $addresses = $this->userAddressRepositoryInterface->getListByUserId($userId);
+        $addresses = $this->userAddressRepositoryInterface->getListByUserId($user->id);
         $count = count($addresses);
         if ($count >= LIMIT_ADDRESS) {
             return _error(null, __('messages.address_limit'), HTTP_BAD_REQUEST);
         }
 
         $params = [
-            'user_id' => $userId,
+            'user_id' => $user->id,
             'first_name' => $request->first_name,
             'last_name' => $request->last_name,
             'phone_number' => $request->phone_number,
@@ -44,13 +44,13 @@ class UserAddressService
         }
 
         if ($request->is_default == ADDRESS_DEFAULT) {
-            $this->userAddressRepositoryInterface->updateDefault($userId, $userAddress->id);
+            $this->userAddressRepositoryInterface->updateDefault($user->id, $userAddress->id);
         }
 
         return _success($userAddress, __('messages.create_success'), HTTP_SUCCESS);
     }
 
-    public function update($request, $userId, $addressId)
+    public function update($request, $user, $addressId)
     {
         $address = $this->userAddressRepositoryInterface->find($addressId);
 
@@ -76,7 +76,7 @@ class UserAddressService
         }
 
         if ($request->is_default == ADDRESS_DEFAULT) {
-            $this->userAddressRepositoryInterface->updateDefault($userId, $addressId);
+            $this->userAddressRepositoryInterface->updateDefault($user->id, $addressId);
         }
 
         return _success($userAddress, __('messages.update_success'), HTTP_SUCCESS);
@@ -103,7 +103,7 @@ class UserAddressService
         return _success($userAddress, __('messages.delete_success'), HTTP_SUCCESS);
     }
 
-    public function show($userId, $addressId)
+    public function show($addressId)
     {
         $address = $this->userAddressRepositoryInterface->find($addressId);
 
@@ -114,9 +114,9 @@ class UserAddressService
         return _success($address, __('messages.success'), HTTP_SUCCESS);
     }
 
-    public function list($userId)
+    public function list($user)
     {
-        $addresses = $this->userAddressRepositoryInterface->getListByUserId($userId);
+        $addresses = $this->userAddressRepositoryInterface->getListByUserId($user->id);
 
         if (!$addresses) {
             return _error(null, __('messages.address_not_found'), HTTP_BAD_REQUEST);
