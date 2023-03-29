@@ -31,7 +31,8 @@ class AppServiceProvider extends ServiceProvider
             'BannerStore',
             'Comment',
             'CommentImage',
-            'MasterField',  
+            'MasterField',
+            'ChildMasterField',
         ];
 
         foreach ($repositories as $repo) {

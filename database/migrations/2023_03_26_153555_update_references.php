@@ -29,7 +29,7 @@ return new class extends Migration
             $table->bigInteger('product_id')->unsigned();
             $table->string('name');
             $table->decimal('sale_price', 12, 2);
-            $table->decimal('original_price', 12, 2);
+            $table->decimal('origin_price', 12, 2);
             $table->bigInteger('stock')->unsigned();
             $table->string('product_code')->nullable();
             $table->foreign('master_field_id')->references('id')->on('master_fields')->onDelete('cascade');

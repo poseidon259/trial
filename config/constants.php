@@ -63,6 +63,8 @@ define('PRODUCT_PENDING', 2);
 // product image
 define('IS_DELETE', 1);
 define('IS_ADD', 2);
+define('IS_UPDATE', 3);
+
 
 // product favorite
 define('PRODUCT_FAVORITE_INACTIVE', 0);

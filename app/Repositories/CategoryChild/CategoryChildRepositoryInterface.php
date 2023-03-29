@@ -10,7 +10,7 @@ interface CategoryChildRepositoryInterface extends BaseRepositoryInterface
 
     public function checkExists($key, $value, $id);
 
-    public function findOne($key, $value, $categoryId, $id);
+    public function findOne($key, $value, $categoryId);
 
     public function findNames($name, $categoryId);
 
