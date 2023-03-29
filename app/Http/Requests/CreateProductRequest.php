@@ -15,6 +15,7 @@ class CreateProductRequest extends BaseRequest
             'name' => 'required|string|max:255',
             'created_by' => 'required|integer',
             'category_id' => 'required|integer',
+            'category_child_id' => 'nullable|integer',
             'description_list' => 'nullable|string',
             'description_detail' => 'nullable|string',
             'status' => 'required|integer',

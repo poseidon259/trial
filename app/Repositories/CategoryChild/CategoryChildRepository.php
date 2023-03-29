@@ -37,11 +37,10 @@ class CategoryChildRepository extends BaseRepository implements CategoryChildRep
      * @param $value
      * @return mixed
      */
-    public function findOne($key, $value, $categoryId, $id)
+    public function findOne($key, $value, $categoryId)
     {
         return $this->_model
                     ->where('category_id', $categoryId)
-                    ->where('id', '!=', $id)
                     ->where($key, $value)->first();
     }
 

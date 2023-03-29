@@ -13,4 +13,6 @@ interface UserRepositoryInterface extends BaseRepositoryInterface
     public function findOne($key, $value);
 
     public function getListUser($request);
+
+    public function detail($id);
 }

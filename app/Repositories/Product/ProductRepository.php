@@ -87,14 +87,16 @@ class ProductRepository extends BaseRepository implements ProductRepositoryInter
             }, 'masterFields' => function ($q) {
                 return $q->select(
                     'master_fields.id',
+                    'master_fields.product_id',
                     'master_fields.name',
                 )->with(['childs' => function ($qc) {
                     return $qc->select(
-                        'master_fields.id',
-                        'master_fields.name',
-                        'master_fields.sale_price',
-                        'master_fields.origin_price',
-                        'master_fields.stock',
+                        'child_master_fields.id',
+                        'child_master_fields.name',
+                        'child_master_fields.master_field_id',
+                        'child_master_fields.sale_price',
+                        'child_master_fields.origin_price',
+                        'child_master_fields.stock',
                     );
                 }]);
             }])
@@ -168,16 +170,16 @@ class ProductRepository extends BaseRepository implements ProductRepositoryInter
                     }, 'masterFields' => function ($q) {
                         return $q->select(
                             'master_fields.id',
-                            'master_fields.name',
                             'master_fields.product_id',
+                            'master_fields.name',
                         )->with(['childs' => function ($qc) {
                             return $qc->select(
-                                'master_fields.id',
-                                'master_fields.name',
-                                'master_fields.parent_id',
-                                'master_fields.sale_price',
-                                'master_fields.origin_price',
-                                'master_fields.stock',
+                                'child_master_fields.id',
+                                'child_master_fields.name',
+                                'child_master_fields.master_field_id',
+                                'child_master_fields.sale_price',
+                                'child_master_fields.origin_price',
+                                'child_master_fields.stock',
                             );
                         }]);
                     }])

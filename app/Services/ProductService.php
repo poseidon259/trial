@@ -2,6 +2,8 @@
 
 namespace App\Services;
 
+use App\Repositories\CategoryChild\CategoryChildRepositoryInterface;
+use App\Repositories\ChildMasterField\ChildMasterFieldRepositoryInterface;
 use App\Repositories\MasterField\MasterFieldRepositoryInterface;
 use App\Repositories\Product\ProductRepositoryInterface;
 use App\Repositories\ProductImage\ProductImageRepositoryInterface;
@@ -35,12 +37,24 @@ class ProductService
      */
     private $masterFieldRepositoryInterface;
 
+    /**
+     * @var ChildMasterFieldRepositoryInterface
+     */
+    private $childMasterFieldRepositoryInterface;
+
+    /**
+     * @var CategoryChildRepositoryInterface
+     */
+    private $categoryChildRepositoryInterface;
+
     public function __construct(
         ProductRepositoryInterface $productRepositoryInterface,
         ProductInformationRepositoryInterface $productInformationRepositoryInterface,
         ProductImageRepositoryInterface $productImageRepositoryInterface,
         ImageKitService $imageKitService,
-        MasterFieldRepositoryInterface $masterFieldRepositoryInterface
+        MasterFieldRepositoryInterface $masterFieldRepositoryInterface,
+        ChildMasterFieldRepositoryInterface $childMasterFieldRepositoryInterface,
+        CategoryChildRepositoryInterface $categoryChildRepositoryInterface
     )
     {
         $this->productRepositoryInterface = $productRepositoryInterface;
@@ -48,6 +62,8 @@ class ProductService
         $this->productImageRepositoryInterface = $productImageRepositoryInterface;
         $this->imageKitService = $imageKitService;
         $this->masterFieldRepositoryInterface = $masterFieldRepositoryInterface;
+        $this->childMasterFieldRepositoryInterface = $childMasterFieldRepositoryInterface;
+        $this->categoryChildRepositoryInterface = $categoryChildRepositoryInterface;
     }
 
     public function create($request, $user)
@@ -58,10 +74,19 @@ class ProductService
             return _error(null, __('messages.product_code_exists'), HTTP_BAD_REQUEST);
         }
 
+        if ($request->category_child_id) {
+            $exitsCategory = $this->categoryChildRepositoryInterface->findOne('id', $request->category_child_id, $request->category_id);
+
+            if (!$exitsCategory) {
+                return _error(null, __('messages.category_child_not_exists'), HTTP_BAD_REQUEST);
+            }
+        }
+
         $newProduct = [
             'name' => $request->name,
             'created_by' => $user->id,
             'category_id' => $request->category_id,
+            'category_child_id' => $request->category_child_id,
             'description_list' => $request->description_list,
             'description_detail' => $request->description_detail,
             'status' => $request->status,
@@ -97,10 +122,12 @@ class ProductService
                 ];
             }
         }
-        $this->productImageRepositoryInterface->insert($images);
+
+        if (!empty($images)) {
+            $this->productImageRepositoryInterface->insert($images);
+        }
 
         if (isset($request->master_fields)) {
-
             foreach ($request->master_fields as $masterField) {
                 $parentParams = [
                     'name' => $masterField['name'],
@@ -110,10 +137,12 @@ class ProductService
                 $field = $this->masterFieldRepositoryInterface->create($parentParams);
 
                 if (isset($masterField['childs'])) {
+                    $childParams = [];
                     foreach ($masterField['childs'] as $child) {
                         $childParams[] = [
                             'name' => $child['name'],
-                            'parent_id' => $field->id,
+                            'product_id' => $product->id,
+                            'master_field_id' => $field->id,
                             'sale_price' => $child['sale_price'],
                             'origin_price' => $child['origin_price'],
                             'stock' => $child['stock'],
@@ -121,7 +150,7 @@ class ProductService
                             'updated_at' => now(),
                         ];
                     }
-                    $this->masterFieldRepositoryInterface->insert($childParams);
+                    $this->childMasterFieldRepositoryInterface->insert($childParams);
                 }
             }
         }
@@ -141,9 +170,18 @@ class ProductService
             return _error(null, __('messages.product_code_exists'), HTTP_BAD_REQUEST);
         }
 
+        if ($request->category_child_id) {
+            $exitsCategory = $this->categoryChildRepositoryInterface->findOne('id', $request->category_child_id, $request->category_id);
+
+            if (!$exitsCategory) {
+                return _error(null, __('messages.category_child_not_exists'), HTTP_BAD_REQUEST);
+            }
+        }
+
         $newProduct = [
             'name' => $request->name,
             'category_id' => $request->category_id,
+            'category_child_id' => $request->category_child_id,
             'description_list' => $request->description_list,
             'description_detail' => $request->description_detail,
             'status' => $request->status,
@@ -158,45 +196,135 @@ class ProductService
             'product_code' => $request->product_code,
             'stock' => $request->stock,
         ];
-        $productInformation = $this->productInformationRepositoryInterface->update($id, $newProductInformation);
+        $this->productInformationRepositoryInterface->update($id, $newProductInformation);
 
         if (isset($request->images)) {
+
+            $this->deleteOldImages($id);
+
             $images = [];
-            foreach ($request->images as $index => $image) {
+            foreach ($request->images as $image) {
+                $file = $image['image'];
+                $fileName = $file->getClientOriginalName();
+                $options = [
+                    'folder' => self::PRODUCT_FOLDER,
+                ];
+                $uploadFile = $this->imageKitService->upload($file, $fileName, $options);
 
-                if ($image['is_delete'] == IS_DELETE) {
-                    $imageDelete = $this->productImageRepositoryInterface->find($image['id']);
-                    $this->imageKitService->delete($imageDelete->file_id);
-                    $imageDelete->delete();
-                }
-                else if ($image['is_delete'] == IS_ADD)
-                {
-                    $file = $image['image'];
-                    $fileName = $file->getClientOriginalName();
-                    $options = [
-                        'folder' => self::PRODUCT_FOLDER,
-                    ];
-
-                    $uploadFile = $this->imageKitService->upload($file, $fileName, $options);
-                    $images[] = [
-                        'product_id' => $product->id,
-                        'image' => $uploadFile['filePath'],
-                        'file_id' => $uploadFile['fileId'],
-                        'type' => $image['type'],
-                        'sort' => $image['sort'],
-                        'status' => $image['status'],
-                    ];
-                }
+                $images[] = [
+                    'product_id' => $product->id,
+                    'image' => $uploadFile['filePath'],
+                    'file_id' => $uploadFile['fileId'],
+                    'type' => $image['type'],
+                    'sort' => $image['sort'],
+                    'status' => $image['status'],
+                ];
             }
 
             if (!empty($images)) {
-                $productImages = $this->productImageRepositoryInterface->insert($images);
+                $this->productImageRepositoryInterface->insert($images);
+            }
+        } else {
+            $this->deleteOldImages($id);
+        }
+
+        if (isset($request->master_fields)) {
+
+            foreach ($request->master_fields as $masterField) {
+
+                if ($masterField['is_delete'] == IS_DELETE) {
+                    $this->masterFieldRepositoryInterface->delete($masterField['id']);
+                }
+
+                if ($masterField['is_delete'] == IS_ADD) {
+                    $parentParams = [
+                        'name' => $masterField['name'],
+                        'product_id' => $product->id,
+                    ];
+
+                    $field = $this->masterFieldRepositoryInterface->create($parentParams);
+
+                    if (isset($masterField['childs'])) {
+                        $childParams = [];
+                        foreach ($masterField['childs'] as $child) {
+                            $childParams[] = [
+                                'name' => $child['name'],
+                                'product_id' => $product->id,
+                                'master_field_id' => $field->id,
+                                'sale_price' => $child['sale_price'],
+                                'origin_price' => $child['origin_price'],
+                                'stock' => $child['stock'],
+                                'created_at' => now(),
+                                'updated_at' => now(),
+                            ];
+                        }
+                        $this->childMasterFieldRepositoryInterface->insert($childParams);
+                    }
+                }
+
+                if ($masterField['is_delete'] == IS_UPDATE) {
+
+                    $this->masterFieldRepositoryInterface->update($masterField['id'], ['name' => $masterField['name']]);
+
+                    if (isset($masterField['childs'])) {
+                        $childParams = [];
+                        foreach ($masterField['childs'] as $child) {
+                            if ($child['is_delete'] == IS_DELETE) {
+                                $this->childMasterFieldRepositoryInterface->delete($child['id']);
+                            }
+
+                            if ($child['is_delete'] == IS_ADD) {
+                                $childParams = [
+                                    'name' => $child['name'],
+                                    'product_id' => $product->id,
+                                    'master_field_id' => $masterField['id'],
+                                    'sale_price' => $child['sale_price'],
+                                    'origin_price' => $child['origin_price'],
+                                    'stock' => $child['stock'],
+                                    'created_at' => now(),
+                                    'updated_at' => now(),
+                                ];
+
+                                $this->childMasterFieldRepositoryInterface->create($childParams);
+                            }
+
+                            if ($child['is_delete'] == IS_UPDATE) {
+                                $updateParams = [
+                                    'name' => $child['name'],
+                                    'sale_price' => $child['sale_price'],
+                                    'origin_price' => $child['origin_price'],
+                                    'stock' => $child['stock'],
+                                ];
+
+                                $this->childMasterFieldRepositoryInterface->update($child['id'], $updateParams);
+                            }
+                        }
+                    }
+                }
+            }
+        } else {
+            $product = $this->productRepositoryInterface->find($id);
+            if (!empty($product->masterFields)) {
+                $product->masterFields()->delete();
             }
         }
 
         return _success(null, __('messages.update_success'), HTTP_SUCCESS);
 
         // Delete product in cart when change status to inactive
+    }
+
+    public function deleteOldImages($productId)
+    {
+        $product = $this->productRepositoryInterface->find($productId);
+
+        if (!empty($product->productImages)) {
+            foreach ($product->productImages as $productImage) {
+                $this->imageKitService->delete($productImage->file_id);
+            }
+
+            $product->productImages()->delete();
+        }
     }
 
     public function delete($id)
