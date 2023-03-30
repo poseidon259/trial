@@ -33,6 +33,7 @@ class AppServiceProvider extends ServiceProvider
             'CommentImage',
             'MasterField',
             'ChildMasterField',
+            'Cart',
         ];
 
         foreach ($repositories as $repo) {

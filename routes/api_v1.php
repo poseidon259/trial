@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\BannerController;
 use App\Http\Controllers\Api\BannerStoreController;
+use App\Http\Controllers\Api\CartController;
 use App\Http\Controllers\Api\CategoryChildController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\CommentController;
@@ -36,6 +37,8 @@ Route::group(['namespace' => 'api\v1'], function () {
         Route::get('profile', [UserController::class, 'profile']);
         Route::post('update_profile', [UserController::class, 'updateProfile']);
         Route::put('change_password', [UserController::class, 'updatePassword']);
+        Route::put('update_cart', [CartController::class, 'update']);
+        Route::get('my_cart', [CartController::class, 'show']);
 
         Route::prefix('user_address')->group(function () {
             Route::get('list', [UserAddressController::class, 'list']);
