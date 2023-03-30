@@ -229,74 +229,77 @@ class ProductService
         }
 
         if (isset($request->master_fields)) {
-
             foreach ($request->master_fields as $masterField) {
 
-                if ($masterField['is_delete'] == IS_DELETE) {
-                    $this->masterFieldRepositoryInterface->delete($masterField['id']);
-                }
-
-                if ($masterField['is_delete'] == IS_ADD) {
-                    $parentParams = [
-                        'name' => $masterField['name'],
-                        'product_id' => $product->id,
-                    ];
-
-                    $field = $this->masterFieldRepositoryInterface->create($parentParams);
-
-                    if (isset($masterField['childs'])) {
-                        $childParams = [];
-                        foreach ($masterField['childs'] as $child) {
-                            $childParams[] = [
-                                'name' => $child['name'],
-                                'product_id' => $product->id,
-                                'master_field_id' => $field->id,
-                                'sale_price' => $child['sale_price'],
-                                'origin_price' => $child['origin_price'],
-                                'stock' => $child['stock'],
-                                'created_at' => now(),
-                                'updated_at' => now(),
-                            ];
-                        }
-                        $this->childMasterFieldRepositoryInterface->insert($childParams);
+                if ($masterField['is_delete'] ?? false) {
+                    if ($masterField['is_delete'] == IS_DELETE) {
+                        $this->masterFieldRepositoryInterface->delete($masterField['id']);
                     }
-                }
-
-                if ($masterField['is_delete'] == IS_UPDATE) {
-
-                    $this->masterFieldRepositoryInterface->update($masterField['id'], ['name' => $masterField['name']]);
-
-                    if (isset($masterField['childs'])) {
-                        $childParams = [];
-                        foreach ($masterField['childs'] as $child) {
-                            if ($child['is_delete'] == IS_DELETE) {
-                                $this->childMasterFieldRepositoryInterface->delete($child['id']);
-                            }
-
-                            if ($child['is_delete'] == IS_ADD) {
-                                $childParams = [
+    
+                    if ($masterField['is_delete'] == IS_ADD) {
+                        $parentParams = [
+                            'name' => $masterField['name'],
+                            'product_id' => $product->id,
+                        ];
+    
+                        $field = $this->masterFieldRepositoryInterface->create($parentParams);
+    
+                        if (isset($masterField['childs'])) {
+                            $childParams = [];
+                            foreach ($masterField['childs'] as $child) {
+                                $childParams[] = [
                                     'name' => $child['name'],
                                     'product_id' => $product->id,
-                                    'master_field_id' => $masterField['id'],
+                                    'master_field_id' => $field->id,
                                     'sale_price' => $child['sale_price'],
                                     'origin_price' => $child['origin_price'],
                                     'stock' => $child['stock'],
                                     'created_at' => now(),
                                     'updated_at' => now(),
                                 ];
-
-                                $this->childMasterFieldRepositoryInterface->create($childParams);
                             }
-
-                            if ($child['is_delete'] == IS_UPDATE) {
-                                $updateParams = [
-                                    'name' => $child['name'],
-                                    'sale_price' => $child['sale_price'],
-                                    'origin_price' => $child['origin_price'],
-                                    'stock' => $child['stock'],
-                                ];
-
-                                $this->childMasterFieldRepositoryInterface->update($child['id'], $updateParams);
+                            $this->childMasterFieldRepositoryInterface->insert($childParams);
+                        }
+                    }
+    
+                    if ($masterField['is_delete'] == IS_UPDATE) {
+    
+                        $this->masterFieldRepositoryInterface->update($masterField['id'], ['name' => $masterField['name']]);
+    
+                        if (isset($masterField['childs'])) {
+                            $childParams = [];
+                            foreach ($masterField['childs'] as $child) {
+                                if ($child['is_delete'] ?? false) {
+                                    if ($child['is_delete'] == IS_DELETE) {
+                                        $this->childMasterFieldRepositoryInterface->delete($child['id']);
+                                    }
+        
+                                    if ($child['is_delete'] == IS_ADD) {
+                                        $childParams = [
+                                            'name' => $child['name'],
+                                            'product_id' => $product->id,
+                                            'master_field_id' => $masterField['id'],
+                                            'sale_price' => $child['sale_price'],
+                                            'origin_price' => $child['origin_price'],
+                                            'stock' => $child['stock'],
+                                            'created_at' => now(),
+                                            'updated_at' => now(),
+                                        ];
+        
+                                        $this->childMasterFieldRepositoryInterface->create($childParams);
+                                    }
+        
+                                    if ($child['is_delete'] == IS_UPDATE) {
+                                        $updateParams = [
+                                            'name' => $child['name'],
+                                            'sale_price' => $child['sale_price'],
+                                            'origin_price' => $child['origin_price'],
+                                            'stock' => $child['stock'],
+                                        ];
+        
+                                        $this->childMasterFieldRepositoryInterface->update($child['id'], $updateParams);
+                                    }
+                                }
                             }
                         }
                     }
