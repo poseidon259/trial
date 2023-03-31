@@ -34,6 +34,8 @@ class AppServiceProvider extends ServiceProvider
             'MasterField',
             'ChildMasterField',
             'Cart',
+            'Order',
+            'OrderItem',
         ];
 
         foreach ($repositories as $repo) {

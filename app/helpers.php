@@ -45,3 +45,15 @@ if (!function_exists('_errorSystem')) {
         return _error(null, __('messages.error_system'), HTTP_BAD_REQUEST);
     }
 }
+
+if (!function_exists('getPrice')) {
+
+    /**
+     * @return \Illuminate\Http\JsonResponse
+     */
+
+    function getPrice($salePrice, $originPrice)
+    {
+        return $salePrice ? $salePrice : $originPrice;
+    }
+}
