@@ -51,28 +51,30 @@ class OrderRepository extends BaseRepository implements OrderRepositoryInterface
      */
     public function detail($id)
     {
-        $url = getenv('IMAGEKIT_URL_ENDPOINT');
 
         return $this->_model
             ->select(
                 'id',
-                'product_id',
-                'content',
-                'rating',
-                'status',
+                'order_no',
                 'first_name',
                 'last_name',
-                'fake_avatar'
-                // DB::raw('CONCAT("' . $url . '", fake_avatar) as fake_avatar'),
+                'email',
+                'phone_number',
+                'province_id',
+                'district_id',
+                'ward_id',
+                'house_number',
+                'discount',
+                'delivery_fee',
+                'discount_freeship',
+                'payment_date',
+                'status',
+                'payment_method',
+                'sub_total',
+                'total',
+                'note',
             )
-            ->with(['commentImages' => function ($query) use ($url) {
-                $query->select(
-                    'id',
-                    'comment_id',
-                    'image',
-                    DB::raw('CONCAT("' . $url . '", image) as image')
-                );
-            }])
+            ->with(['orderItems'])
             ->where('id', $id)
             ->first();
     }

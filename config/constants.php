@@ -85,3 +85,8 @@ define('SLUG_PERMISSION_ADMIN', 'admin');
 define('SLUG_PERMISSION_STORE', 'store');
 define('SLUG_PERMISSION_EMP', 'employee');
 define('SLUG_PERMISSION_USER', 'user');
+
+//order
+define('ORDER_NEW', 1);
+define('DELIVERY_FEE', 30000);
+

@@ -12,4 +12,5 @@ interface ChildMasterFieldRepositoryInterface extends BaseRepositoryInterface
 
     public function findOne($key, $value);
 
+    public function detail($productId, $id);
 }
