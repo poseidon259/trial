@@ -13,4 +13,6 @@ interface OrderRepositoryInterface extends BaseRepositoryInterface
     public function findOne($key, $value);
 
     public function detail($id);
+
+    public function getListOrder($request);
 }

@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateOrderRequest;
 use App\Http\Requests\GetListOrderRequest;
-use App\Http\Requests\UpdateOrderRequest;
 use App\Services\OrderService;
 use Exception;
 use Illuminate\Support\Facades\DB;
@@ -37,19 +36,6 @@ class OrderController extends Controller
         }
     }
 
-    public function update(UpdateOrderRequest $request, $id) {
-        DB::beginTransaction();
-        try {
-            $order = $this->orderService->update($request, $id);
-            DB::commit();
-            return $order;
-        } catch (Exception $e) {
-            DB::rollBack();
-            Log::error(__METHOD__ . ' - ' . __LINE__ . ' : ' . $e->getMessage());
-            return _errorSystem();
-        }
-    }
-
     public function delete($id) {
         DB::beginTransaction();
         try {
@@ -72,7 +58,7 @@ class OrderController extends Controller
         }
     }
 
-    public function getList(GetListOrderRequest $request) {
+    public function list(GetListOrderRequest $request) {
         try {
             return $this->orderService->getList($request);
         } catch (Exception $e) {

@@ -51,7 +51,6 @@ class OrderRepository extends BaseRepository implements OrderRepositoryInterface
      */
     public function detail($id)
     {
-
         return $this->_model
             ->select(
                 'id',
@@ -77,5 +76,48 @@ class OrderRepository extends BaseRepository implements OrderRepositoryInterface
             ->with(['orderItems'])
             ->where('id', $id)
             ->first();
+    }
+
+    /**
+     * Get list order
+     *
+     * @param $request
+     * @return mixed
+     */
+    public function getListOrder($request)
+    {
+        $query = $this->_model
+            ->select(
+                'id',
+                'order_no',
+                'first_name',
+                'last_name',
+                'email',
+                'phone_number',
+                'province_id',
+                'district_id',
+                'ward_id',
+                'house_number',
+                'discount',
+                'delivery_fee',
+                'discount_freeship',
+                'payment_date',
+                'status',
+                'payment_method',
+                'sub_total',
+                'total',
+                'note',
+            )
+            ->with(['orderItems']);
+
+        if ($request->keyword) {
+            $query->where('order_no', 'like', '%' . $request->keyword . '%');
+        }
+
+        if ($request->start_date && $request->end_date) {
+            $query->whereBetween('created_at', [$request->start_date, $request->end_date]);
+        }
+
+        return $query;
     }
 }
