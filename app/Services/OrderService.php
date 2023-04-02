@@ -52,32 +52,38 @@ class OrderService
             foreach ($request->order_items as $item) {
                 if (isset($item['child_master_field_id']) && $item['child_master_field_id'] != null) {
                     $product = $this->childMasterFieldRepositoryInterface->detail($item['product_id'], $item['child_master_field_id']);
-                    $paramItems[] = [
-                        'product_id' => $item['product_id'],
-                        'child_master_field_id' => $item['child_master_field_id'],
-                        'product_name' => $product->product_name,
-                        'sale_price' => $product->sale_price,
-                        'origin_price' => $product->origin_price,
-                        'quantity' => $item['quantity'],
-                        'sub_total' => getPrice($product->sale_price, $product->origin_price) * $item['quantity'],
-                        'total' => $productTotal = getPrice($product->sale_price, $product->origin_price) * $item['quantity'],
-                    ];
-
-                    $subTotal += $productTotal;
+                    
+                    if ($product) {
+                        $paramItems[] = [
+                            'product_id' => $item['product_id'],
+                            'child_master_field_id' => $item['child_master_field_id'],
+                            'product_name' => $product->product_name,
+                            'sale_price' => $product->sale_price,
+                            'origin_price' => $product->origin_price,
+                            'quantity' => $item['quantity'],
+                            'sub_total' => getPrice($product->sale_price, $product->origin_price) * $item['quantity'],
+                            'total' => $productTotal = getPrice($product->sale_price, $product->origin_price) * $item['quantity'],
+                        ];
+                        
+                        $subTotal += $productTotal;
+                    }
                 } else {
                     $product = $this->productRepositoryInterface->detail($item['product_id']);
-                    $paramItems[] = [
-                        'product_id' => $item['product_id'],
-                        'child_master_field_id' => null,
-                        'product_name' => $product->name,
-                        'sale_price' => $product->sale_price,
-                        'origin_price' => $product->origin_price,
-                        'quantity' => $item['quantity'],
-                        'sub_total' => getPrice($product->sale_price, $product->origin_price) * $item['quantity'],
-                        'total' => $productTotal = getPrice($product->sale_price, $product->origin_price) * $item['quantity'],
-                    ];
 
-                    $subTotal += $productTotal;
+                    if ($product) {
+                        $paramItems[] = [
+                            'product_id' => $item['product_id'],
+                            'child_master_field_id' => null,
+                            'product_name' => $product->name,
+                            'sale_price' => $product->sale_price,
+                            'origin_price' => $product->origin_price,
+                            'quantity' => $item['quantity'],
+                            'sub_total' => getPrice($product->sale_price, $product->origin_price) * $item['quantity'],
+                            'total' => $productTotal = getPrice($product->sale_price, $product->origin_price) * $item['quantity'],
+                        ];
+    
+                        $subTotal += $productTotal;
+                    }
                 }
             }
 
@@ -133,5 +139,21 @@ class OrderService
         $order = $this->orderRepositoryInterface->detail($id);
 
         return _success($order, __('messages.success'), HTTP_SUCCESS);
+    }
+
+    public function getList($request)
+    {
+        $limit = $request->limit ?? LIMIT;
+        $page = $request->page ?? PAGE;
+
+        $orders = $this->orderRepositoryInterface->getListOrder($request)->paginate($limit, $page);
+
+        return [
+            'orders' => $orders->items(),
+            'total' => $orders->total(),
+            'current_page' => $orders->currentPage(),
+            'last_page' => $orders->lastPage(),
+            'per_page' => $orders->perPage(),
+        ];
     }
 }

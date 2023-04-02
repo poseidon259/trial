@@ -116,7 +116,6 @@ Route::group(['namespace' => 'api\v1'], function () {
             Route::get('list', [OrderController::class, 'list']);
             Route::get('show/{id}', [OrderController::class, 'show']);
             Route::post('create', [OrderController::class, 'create']);
-            Route::post('update/{id}', [OrderController::class, 'update']);
             Route::delete('delete/{id}', [OrderController::class, 'delete']);
         });
     });
