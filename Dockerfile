@@ -43,6 +43,7 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 COPY . /var/www/html/
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 COPY dockerbuild/docker-php-entrypoint /usr/bin/
+COPY uploads.ini /usr/local/etc/php/conf.d/uploads.ini
 
 WORKDIR /var/www/html/
 

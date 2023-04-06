@@ -40,23 +40,24 @@ class BannerService
             $images = $request->images;
 
             foreach ($images as $index => $image) {
-                $file = $image['image'];
-                $fileName = $file->getClientOriginalName();
-                $options = [
-                    'folder' => self::BANNER_FOLDER,
-                ];
+                if (isset($image['image'])) {
+                    $file = $image['image'];
+                    $fileName = $file->getClientOriginalName();
+                    $options = [
+                        'folder' => self::BANNER_FOLDER,
+                    ];
 
-                $uploadFile = $this->imageKitService->upload($file, $fileName, $options);
-
-                $params[] = [
-                    'image' => $uploadFile['filePath'],
-                    'file_id' => $uploadFile['fileId'],
-                    'link_url' => $image['link_url'],
-                    'sort' => $image['sort'] ?? $index,
-                    'display' => $image['display'] ?? BANNER_ACTIVE,
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                ];
+                    $uploadFile = $this->imageKitService->upload($file, $fileName, $options);
+                    $params[] = [
+                        'image' => $uploadFile['filePath'],
+                        'file_id' => $uploadFile['fileId'],
+                        'link_url' => $image['link_url'],
+                        'sort' => $image['sort'] ?? $index,
+                        'display' => $image['display'] ?? BANNER_ACTIVE,
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ];
+                }
             }
 
             $this->bannerRepositoryInterface->insert($params);
