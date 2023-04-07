@@ -22,7 +22,7 @@ class AuthService
 
     public function __construct(
         UserRepositoryInterface $userRepositoryInterface,
-        MailService $mailService
+        MailService             $mailService
     )
     {
         $this->userRepositoryInterface = $userRepositoryInterface;
@@ -40,7 +40,7 @@ class AuthService
             if (Auth::attempt($credentials) == false) {
                 return _error(null, __('messages.wrong_password_or_email'), HTTP_BAD_REQUEST);
             }
-            
+
             $user = Auth::user();
 
             if (!$user) {
@@ -137,7 +137,8 @@ class AuthService
         return _error(null, __('messages.no_permission'), HTTP_BAD_REQUEST);
     }
 
-    public function register($request) {
+    public function register($request)
+    {
         $checkEmailUser = $this->userRepositoryInterface->findOne('email', $request->email);
 
         if ($checkEmailUser) {
@@ -156,7 +157,7 @@ class AuthService
         if (!$user) {
             return _error(null, __('messages.created_fail'), HTTP_BAD_REQUEST);
         }
-        
+
         $dataMail = [
             'name' => $request->first_name . ' ' . $request->last_name,
             'url' => env('BASE_URL') . '/verify_account?email=' . $request->email . '&id=' . $user->id,
@@ -180,7 +181,8 @@ class AuthService
         return _success($data, __('messages.created_success'), HTTP_SUCCESS);
     }
 
-    public function verifyAccount($request) {
+    public function verifyAccount($request)
+    {
         $user = $this->userRepositoryInterface->find($request->id);
 
         if (!$user) {
@@ -206,9 +208,10 @@ class AuthService
         return _error(null, __('messages.verify_fail'), HTTP_BAD_REQUEST);
     }
 
-    public function resendEmailVerifyAccount($request) {
+    public function resendEmailVerifyAccount($request)
+    {
         $user = $this->userRepositoryInterface->findOne('email', $request->email);
-        
+
         if (!$user) {
             return _error(null, __('messages.user_not_found'), HTTP_BAD_REQUEST);
         }
@@ -218,7 +221,7 @@ class AuthService
         }
 
         $now = new DateTime();
-        $user =  $this->userRepositoryInterface->update($user->id, [
+        $user = $this->userRepositoryInterface->update($user->id, [
             'updated_at' => $now,
         ]);
 
@@ -241,7 +244,8 @@ class AuthService
         return _success(null, __('messages.resend_email_success'), HTTP_SUCCESS);
     }
 
-    public function sendEmailResetPassword($request) {
+    public function sendEmailResetPassword($request)
+    {
         $checkExistsEmail = $this->userRepositoryInterface->findOne('email', $request->email);
         if (!$checkExistsEmail) {
             return _error(null, __('messages.email_not_exists'), HTTP_BAD_REQUEST);
@@ -279,7 +283,8 @@ class AuthService
         return _success(null, __('messages.send_email_reset_password_success'), HTTP_SUCCESS);
     }
 
-    public function updatePassword($request) {
+    public function updatePassword($request)
+    {
         $checkExistsEmail = $this->userRepositoryInterface->findOne('email', $request->email);
 
         if (!$checkExistsEmail) {

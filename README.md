@@ -2,9 +2,9 @@
     - docker-compose up -d 
     - docker image prune -af
     - docker-compose down
-    - docker exec php bash
+    - docker-compose exec php bash
 - Init
-    - in docker exec php bash
+    - in docker-compose exec php bash
     - composer install
     - php artisan migrate
     - php artisan passport:install

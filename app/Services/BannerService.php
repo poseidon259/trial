@@ -20,8 +20,9 @@ class BannerService
 
     public function __construct(
         BannerRepositoryInterface $bannerRepositoryInterface,
-        ImageKitService $imageKitService
-    ) {
+        ImageKitService           $imageKitService
+    )
+    {
         $this->bannerRepositoryInterface = $bannerRepositoryInterface;
         $this->imageKitService = $imageKitService;
     }

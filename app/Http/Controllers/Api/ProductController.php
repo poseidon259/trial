@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateProductRequest;
+use App\Http\Requests\GetListProductHomepageRequest;
 use App\Http\Requests\GetListProductRequest;
 use App\Http\Requests\UpdateProductRequest;
 use App\Services\ProductService;
@@ -21,7 +22,8 @@ class ProductController extends Controller
 
     public function __construct(
         ProductService $productService
-    ) {
+    )
+    {
         $this->productService = $productService;
     }
 
@@ -89,5 +91,10 @@ class ProductController extends Controller
             Log::error(__METHOD__ . ' - ' . __LINE__ . ' : ' . $e->getMessage());
             return _errorSystem();
         }
+    }
+
+    public function getListAtHomepage(GetListProductHomepageRequest $request)
+    {
+
     }
 }
