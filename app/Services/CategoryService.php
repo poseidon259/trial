@@ -7,6 +7,7 @@ use App\Repositories\Product\ProductRepositoryInterface;
 
 class CategoryService
 {
+    const CATEGORY_FOLER = 'categories';
     /**
      * @var CategoryRepositoryInterface
      */
@@ -17,12 +18,19 @@ class CategoryService
      */
     private $productRepositoryInterface;
 
+    /**
+     * @var ImageKitService
+     */
+    private $imageKitService;
+
     public function __construct(
         CategoryRepositoryInterface $categoryRepostiryInterface,
-        ProductRepositoryInterface $productRepositoryInterface
+        ProductRepositoryInterface $productRepositoryInterface,
+        ImageKitService $imageKitService
     ) {
         $this->categoryRepostiryInterface = $categoryRepostiryInterface;
         $this->productRepositoryInterface = $productRepositoryInterface;
+        $this->imageKitService = $imageKitService;
     }
 
     public function create($request)
@@ -33,8 +41,18 @@ class CategoryService
             return _error(null, __('messages.category_exists'), HTTP_BAD_REQUEST);
         }
 
+        $file = $request->image;
+        $fileName = $file->getClientOriginalName();
+        $options = [
+            'folder' => self::CATEGORY_FOLER,
+        ];
+        $uploadFile = $this->imageKitService->upload($file, $fileName, $options);
+
+
         $params = [
             'name' => $request->name,
+            'image' => $uploadFile['filePath'],
+            'file_id' => $uploadFile['fileId'],
         ];
 
         $category = $this->categoryRepostiryInterface->create($params);
@@ -60,8 +78,19 @@ class CategoryService
             return _error(null, __('messages.category_exists'), HTTP_BAD_REQUEST);
         }
 
+        $this->imageKitService->delete($old->file_id);
+
+        $file = $request->image;
+        $fileName = $file->getClientOriginalName();
+        $options = [
+            'folder' => self::CATEGORY_FOLER,
+        ];
+        $uploadFile = $this->imageKitService->upload($file, $fileName, $options);
+
         $params = [
             'name' => $request->name,
+            'image' => $uploadFile['filePath'],
+            'file_id' => $uploadFile['fileId'],
         ];
 
         $category = $this->categoryRepostiryInterface->update($id, $params);
@@ -87,6 +116,7 @@ class CategoryService
             return _error(null, __('messages.category_has_product_cant_delete'), HTTP_BAD_REQUEST);
         }
 
+        $this->imageKitService->delete($checkExists->file_id);
         $category = $this->categoryRepostiryInterface->delete($id);
 
         if (!$category) {

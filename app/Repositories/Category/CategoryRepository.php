@@ -4,6 +4,7 @@ namespace App\Repositories\Category;
 
 use App\Models\Category;
 use App\Repositories\Base\BaseRepository;
+use Illuminate\Support\Facades\DB;
 
 class CategoryRepository extends BaseRepository implements CategoryRepositoryInterface
 {
@@ -47,10 +48,12 @@ class CategoryRepository extends BaseRepository implements CategoryRepositoryInt
      * @return mixed
      */
     public function getListCategory($request) {
+        $url = getenv('IMAGEKIT_URL_ENDPOINT');
         $query = $this->_model
                     ->select(
                         'id',
-                        'name'
+                        'name',
+                        DB::raw("CONCAT('$url', image) as image")
                     );
 
         return $query->orderBy('categories.id', 'desc');

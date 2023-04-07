@@ -13,6 +13,7 @@ class UpdateCategoryRequest extends BaseRequest
     {
         return [
             'name' => 'required|string|max:255',
+            'image' => 'required|mimes:jpeg,png,jpg,heic|max:' . MAX_UPLOAD_FILE_SIZE,
         ];
     }
 }

@@ -70,7 +70,7 @@ Route::group(['namespace' => 'api\v1'], function () {
             Route::get('list', [CategoryController::class, 'list']);
             Route::get('show/{id}', [CategoryController::class, 'show']);
             Route::post('create', [CategoryController::class, 'create']);
-            Route::put('update/{id}', [CategoryController::class, 'update']);
+            Route::post('update/{id}', [CategoryController::class, 'update']);
             Route::delete('delete/{id}', [CategoryController::class, 'delete']);
 
             Route::prefix('{categoryId}/child')->group(function () {
