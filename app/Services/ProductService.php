@@ -381,4 +381,20 @@ class ProductService
         return _success($product, __('messages.success'), HTTP_SUCCESS);
     }
 
+    public function getListAtHomepage($request)
+    {
+        $limit = $request->limit ?? LIMIT;
+        $page = $request->page ?? PAGE;
+
+        $products = $this->productRepositoryInterface->getListAtHomepage($request)->paginate($limit, $page);
+
+        return [
+            'products' => $products->items(),
+            'total' => $products->total(),
+            'current_page' => $products->currentPage(),
+            'last_page' => $products->lastPage(),
+            'per_page' => $products->perPage(),
+        ];
+    }
+
 }

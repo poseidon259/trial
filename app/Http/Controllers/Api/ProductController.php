@@ -95,6 +95,11 @@ class ProductController extends Controller
 
     public function getListAtHomepage(GetListProductHomepageRequest $request)
     {
-
+        try {
+            return $this->productService->getListAtHomepage($request);
+        } catch (Exception $e) {
+            Log::error(__METHOD__ . ' - ' . __LINE__ . ' : ' . $e->getMessage());
+            return _errorSystem();
+        }
     }
 }

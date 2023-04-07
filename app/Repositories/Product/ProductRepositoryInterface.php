@@ -19,4 +19,6 @@ interface ProductRepositoryInterface extends BaseRepositoryInterface
     public function countByCategory($categoryId);
 
     public function countByChildCategory($childCategoryId);
+
+    public function getListAtHomepage($request);
 }

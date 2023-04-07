@@ -33,7 +33,8 @@ Route::group(['namespace' => 'api\v1'], function () {
     Route::get('resend_email_verify_account', [AuthController::class, 'resendEmailVerifyAccount'])->middleware('throttle:5,1');
     Route::get('send_email_reset_password', [AuthController::class, 'sendEmailResetPassword'])->middleware('throttle:5,1');
     Route::put('update_password', [AuthController::class, 'updatePassword']);
-
+    Route::get('list_product', [ProductController::class, 'getListAtHomepage']);
+    
     Route::group(['middleware' => 'auth:api'], function () {
         Route::get('profile', [UserController::class, 'profile']);
         Route::post('update_profile', [UserController::class, 'updateProfile']);

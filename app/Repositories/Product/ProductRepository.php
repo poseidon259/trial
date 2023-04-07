@@ -209,4 +209,49 @@ class ProductRepository extends BaseRepository implements ProductRepositoryInter
     {
         return $this->_model->where('child_category_id', $childCategoryId)->count();
     }
+
+    /**
+     * Get list product at homepage
+     *
+     * @param $request
+     * @return mixed
+     */
+    public function getListAtHomepage($request)
+    {
+        $url = getenv('IMAGEKIT_URL_ENDPOINT');
+
+        $query = $this->_model
+            ->join('product_information', 'products.id', '=', 'product_information.product_id')
+            ->where('products.status', PRODUCT_ACTIVE)
+            ->select(
+                'products.id',
+                'products.name',
+                'products.category_id',
+                'products.status',
+                'products.created_by',
+                'products.description_list',
+                'products.description_detail',
+                'product_information.product_code',
+                'product_information.sale_price',
+                'product_information.origin_price',
+                'product_information.stock',
+                'products.description_list',
+                'products.description_detail',
+                'products.created_at',
+                'products.updated_at',
+            )
+            ->with(['productImages' => function ($q) use ($url) {
+                return $q->select(
+                    'product_images.id',
+                    'product_images.product_id',
+                    DB::raw('CONCAT("' . $url . '", product_images.image) as image'),
+                    'product_images.type',
+                    'product_images.sort',
+                    'product_images.status'
+                );
+            }])
+            ;
+
+        return $query->orderBy('products.updated_at', 'desc');
+    }
 }
