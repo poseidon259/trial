@@ -8,6 +8,7 @@ use App\Http\Requests\GetListCommentRequest;
 use App\Http\Requests\UpdateCommentRequest;
 use App\Services\CommentService;
 use Exception;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
@@ -81,6 +82,21 @@ class CommentController extends Controller
         try {
             return $this->commentService->list($request, $productId);
         } catch (Exception $e) {
+            Log::error(__METHOD__ . ' - ' . __LINE__ . ' : ' . $e->getMessage());
+            return _errorSystem();
+        }
+    }
+
+    public function createCommentPublic(CreateCommentRequest $request, $productId)
+    {
+        DB::beginTransaction();
+        try {
+            $user = Auth::user();
+            $comment = $this->commentService->createCommentPublic($request, $productId, $user);
+            DB::commit();
+            return $comment;
+        } catch (Exception $e) {
+            DB::rollBack();
             Log::error(__METHOD__ . ' - ' . __LINE__ . ' : ' . $e->getMessage());
             return _errorSystem();
         }

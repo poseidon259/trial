@@ -92,4 +92,11 @@ class BannerService
 
         return _success($banners, __('messages.success'), HTTP_SUCCESS);
     }
+
+    public function getListBannerPublic()
+    {
+        $banners = $this->bannerRepositoryInterface->getListBannerPublic();
+
+        return _success($banners, __('messages.success'), HTTP_SUCCESS);
+    }
 }

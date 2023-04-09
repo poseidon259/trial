@@ -81,7 +81,23 @@ class BannerRepository extends BaseRepository implements BannerRepositoryInterfa
                 'created_at',
                 'updated_at'
             )
+            ->orderBy('sort', 'asc')->get();
+    }
+
+
+    public function getListBannerPublic()
+    {
+        $url = getenv('IMAGEKIT_URL_ENDPOINT');
+
+        return $this->_model
             ->where('display', BANNER_ACTIVE)
+            ->select(
+                'id',
+                DB::raw('CONCAT("' . $url . '", image) as image'),
+                'sort',
+                'created_at',
+                'updated_at'
+            )
             ->orderBy('sort', 'asc')->get();
     }
 }

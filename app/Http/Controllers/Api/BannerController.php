@@ -42,4 +42,14 @@ class BannerController extends Controller
             return _errorSystem();
         }
     }
+
+    public function getListBannerPublic()
+    {
+        try {
+            return $this->bannerService->getListBannerPublic();
+        } catch (Exception $e) {
+            Log::error(__METHOD__ . ' - ' . __LINE__ . ' : ' . $e->getMessage());
+            return _errorSystem();
+        }
+    }
 }

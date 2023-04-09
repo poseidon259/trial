@@ -18,7 +18,7 @@ class ProductController extends Controller
     /**
      * @var ProductService
      */
-    private $productService;
+    private ProductService $productService;
 
     public function __construct(
         ProductService $productService
@@ -74,8 +74,7 @@ class ProductController extends Controller
     public function list(GetListProductRequest $request)
     {
         try {
-            $result = $this->productService->list($request);
-            return $result;
+            return $this->productService->list($request);
         } catch (Exception $e) {
             Log::error(__METHOD__ . ' - ' . __LINE__ . ' : ' . $e->getMessage());
             return _errorSystem();
@@ -85,8 +84,7 @@ class ProductController extends Controller
     public function show($id)
     {
         try {
-            $result = $this->productService->show($id);
-            return $result;
+            return $this->productService->show($id);
         } catch (Exception $e) {
             Log::error(__METHOD__ . ' - ' . __LINE__ . ' : ' . $e->getMessage());
             return _errorSystem();
@@ -97,6 +95,16 @@ class ProductController extends Controller
     {
         try {
             return $this->productService->getListAtHomepage($request);
+        } catch (Exception $e) {
+            Log::error(__METHOD__ . ' - ' . __LINE__ . ' : ' . $e->getMessage());
+            return _errorSystem();
+        }
+    }
+
+    public function detailProductPublic($id)
+    {
+        try {
+            return $this->productService->detailProductPublic($id);
         } catch (Exception $e) {
             Log::error(__METHOD__ . ' - ' . __LINE__ . ' : ' . $e->getMessage());
             return _errorSystem();

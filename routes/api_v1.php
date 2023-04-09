@@ -34,7 +34,11 @@ Route::group(['namespace' => 'api\v1'], function () {
     Route::get('send_email_reset_password', [AuthController::class, 'sendEmailResetPassword'])->middleware('throttle:5,1');
     Route::put('update_password', [AuthController::class, 'updatePassword']);
     Route::get('list_product', [ProductController::class, 'getListAtHomepage']);
-    
+    Route::get('list_category', [CategoryController::class, 'list']);
+    Route::get('list_banner', [BannerController::class, 'getListBannerPublic']);
+    Route::get('client/product/{id}', [ProductController::class, 'detailProductPublic']);
+    Route::post('client/product/{id}/comment/create', [CommentController::class, 'createCommentPublic']);
+
     Route::group(['middleware' => 'auth:api'], function () {
         Route::get('profile', [UserController::class, 'profile']);
         Route::post('update_profile', [UserController::class, 'updateProfile']);
@@ -68,7 +72,6 @@ Route::group(['namespace' => 'api\v1'], function () {
         });
 
         Route::prefix('category')->group(function () {
-            Route::get('list', [CategoryController::class, 'list']);
             Route::get('show/{id}', [CategoryController::class, 'show']);
             Route::post('create', [CategoryController::class, 'create']);
             Route::post('update/{id}', [CategoryController::class, 'update']);

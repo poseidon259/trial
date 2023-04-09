@@ -15,37 +15,37 @@ class ProductService
     /**
      * @var ProductRepositoryInterface
      */
-    private $productRepositoryInterface;
+    private ProductRepositoryInterface $productRepositoryInterface;
 
     /**
      * @var ProductInformationRepositoryInterface
      */
-    private $productInformationRepositoryInterface;
+    private ProductInformationRepositoryInterface $productInformationRepositoryInterface;
 
     /**
      * @var ProductImageRepositoryInterface
      */
-    private $productImageRepositoryInterface;
+    private ProductImageRepositoryInterface $productImageRepositoryInterface;
 
     /**
      * @var ImageKitService
      */
-    private $imageKitService;
+    private ImageKitService $imageKitService;
 
     /**
      * @var MasterFieldRepositoryInterface
      */
-    private $masterFieldRepositoryInterface;
+    private MasterFieldRepositoryInterface $masterFieldRepositoryInterface;
 
     /**
      * @var ChildMasterFieldRepositoryInterface
      */
-    private $childMasterFieldRepositoryInterface;
+    private ChildMasterFieldRepositoryInterface $childMasterFieldRepositoryInterface;
 
     /**
      * @var CategoryChildRepositoryInterface
      */
-    private $categoryChildRepositoryInterface;
+    private CategoryChildRepositoryInterface $categoryChildRepositoryInterface;
 
     public function __construct(
         ProductRepositoryInterface $productRepositoryInterface,
@@ -104,7 +104,7 @@ class ProductService
 
         if (isset($request->images)) {
             $images = [];
-            foreach ($request->images as $image) {
+            foreach ($request->images as $index => $image) {
                 $file = $image['image'];
                 $fileName = $file->getClientOriginalName();
                 $options = [
@@ -117,7 +117,7 @@ class ProductService
                     'image' => $uploadFile['filePath'],
                     'file_id' => $uploadFile['fileId'],
                     'type' => $image['type'],
-                    'sort' => $image['sort'],
+                    'sort' => $image['sort'] ?? $index,
                     'status' => $image['status'],
                 ];
             }
@@ -154,7 +154,7 @@ class ProductService
                 }
             }
         }
-        
+
         return _success(null, __('messages.create_success'), HTTP_SUCCESS);
     }
 
@@ -203,7 +203,7 @@ class ProductService
             $this->deleteOldImages($id);
 
             $images = [];
-            foreach ($request->images as $image) {
+            foreach ($request->images as $index => $image) {
                 $file = $image['image'];
                 $fileName = $file->getClientOriginalName();
                 $options = [
@@ -216,7 +216,7 @@ class ProductService
                     'image' => $uploadFile['filePath'],
                     'file_id' => $uploadFile['fileId'],
                     'type' => $image['type'],
-                    'sort' => $image['sort'],
+                    'sort' => $image['sort'] ?? $index,
                     'status' => $image['status'],
                 ];
             }
@@ -235,15 +235,15 @@ class ProductService
                     if ($masterField['is_delete'] == IS_DELETE) {
                         $this->masterFieldRepositoryInterface->delete($masterField['id']);
                     }
-    
+
                     if ($masterField['is_delete'] == IS_ADD) {
                         $parentParams = [
                             'name' => $masterField['name'],
                             'product_id' => $product->id,
                         ];
-    
+
                         $field = $this->masterFieldRepositoryInterface->create($parentParams);
-    
+
                         if (isset($masterField['childs'])) {
                             $childParams = [];
                             foreach ($masterField['childs'] as $child) {
@@ -261,11 +261,11 @@ class ProductService
                             $this->childMasterFieldRepositoryInterface->insert($childParams);
                         }
                     }
-    
+
                     if ($masterField['is_delete'] == IS_UPDATE) {
-    
+
                         $this->masterFieldRepositoryInterface->update($masterField['id'], ['name' => $masterField['name']]);
-    
+
                         if (isset($masterField['childs'])) {
                             $childParams = [];
                             foreach ($masterField['childs'] as $child) {
@@ -273,7 +273,7 @@ class ProductService
                                     if ($child['is_delete'] == IS_DELETE) {
                                         $this->childMasterFieldRepositoryInterface->delete($child['id']);
                                     }
-        
+
                                     if ($child['is_delete'] == IS_ADD) {
                                         $childParams = [
                                             'name' => $child['name'],
@@ -285,10 +285,10 @@ class ProductService
                                             'created_at' => now(),
                                             'updated_at' => now(),
                                         ];
-        
+
                                         $this->childMasterFieldRepositoryInterface->create($childParams);
                                     }
-        
+
                                     if ($child['is_delete'] == IS_UPDATE) {
                                         $updateParams = [
                                             'name' => $child['name'],
@@ -296,7 +296,7 @@ class ProductService
                                             'origin_price' => $child['origin_price'],
                                             'stock' => $child['stock'],
                                         ];
-        
+
                                         $this->childMasterFieldRepositoryInterface->update($child['id'], $updateParams);
                                     }
                                 }
@@ -336,7 +336,7 @@ class ProductService
         if (!$product) {
             return _error(null, __('messages.product_not_found'), HTTP_BAD_REQUEST);
         }
-        
+
         $this->productInformationRepositoryInterface->findOne('product_id', $id)->delete();
 
         if (!empty($product->productImages)) {
@@ -397,4 +397,15 @@ class ProductService
         ];
     }
 
+    public  function  detailProductPublic($id)
+    {
+        $product = $this->productRepositoryInterface->find($id);
+        if (!$product) {
+            return _error(null, __('messages.product_not_found'), HTTP_BAD_REQUEST);
+        }
+
+        $product = $this->productRepositoryInterface->detailProductPublic($id);
+
+        return _success($product, __('messages.success'), HTTP_SUCCESS);
+    }
 }

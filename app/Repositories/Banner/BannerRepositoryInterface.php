@@ -17,4 +17,6 @@ interface BannerRepositoryInterface extends BaseRepositoryInterface
     public function deleteIds($ids);
 
     public function list();
+
+    public function getListBannerPublic();
 }
