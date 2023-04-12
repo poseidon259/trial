@@ -2,20 +2,8 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Foundation\Http\FormRequest;
-
-class CreateCommentPublicRequest extends FormRequest
+class CreateCommentPublicRequest extends BaseRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     *
-     * @return bool
-     */
-    public function authorize()
-    {
-        return false;
-    }
-
     /**
      * Get the validation rules that apply to the request.
      *
@@ -24,7 +12,11 @@ class CreateCommentPublicRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'content' => 'required|string|max:500',
+            'rating' => 'required|integer|min:1|max:5',
+            'status' => 'nullable|integer',
+            'images' => 'array',
+            'images.*.image' => 'mimes:jpeg,png,jpg,heic|max:' . MAX_UPLOAD_FILE_SIZE,
         ];
     }
 }

@@ -16,4 +16,5 @@ interface CategoryRepositoryInterface extends BaseRepositoryInterface
 
     public function detail($id);
 
+    public function getCategoryPublic($request, $id);
 }

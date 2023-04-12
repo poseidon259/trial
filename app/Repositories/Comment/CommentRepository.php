@@ -107,4 +107,32 @@ class CommentRepository extends BaseRepository implements CommentRepositoryInter
             }])
             ->where('product_id', $productId);
     }
+
+    public function getListCommentPublic($productId)
+    {
+        $url = getenv('IMAGEKIT_URL_ENDPOINT');
+
+        return $this->_model
+            ->where('comments.status', COMMENT_ACTIVE)
+            ->select(
+                'id',
+                'content',
+                'rating',
+                'first_name',
+                'last_name',
+                'fake_avatar',
+                'updated_at'
+            )
+            ->with(['commentImages' => function ($query) use ($url) {
+                $query->select(
+                    'id',
+                    'comment_id',
+                    'image',
+                    DB::raw('CONCAT("' . $url . '", image) as image')
+                );
+            }])
+            ->where('product_id', $productId)
+            ->orderBy('updated_at', 'DESC')
+            ;
+    }
 }

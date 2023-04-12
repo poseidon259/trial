@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\CreateCommentPublicRequest;
 use App\Http\Requests\CreateCommentRequest;
+use App\Http\Requests\GetListCommentPublicRequest;
 use App\Http\Requests\GetListCommentRequest;
 use App\Http\Requests\UpdateCommentRequest;
 use App\Services\CommentService;
@@ -87,7 +89,7 @@ class CommentController extends Controller
         }
     }
 
-    public function createCommentPublic(CreateCommentRequest $request, $productId)
+    public function createCommentPublic(CreateCommentPublicRequest $request, $productId)
     {
         DB::beginTransaction();
         try {
@@ -97,6 +99,16 @@ class CommentController extends Controller
             return $comment;
         } catch (Exception $e) {
             DB::rollBack();
+            Log::error(__METHOD__ . ' - ' . __LINE__ . ' : ' . $e->getMessage());
+            return _errorSystem();
+        }
+    }
+
+    public function getListCommentPublic(GetListCommentPublicRequest $request, $productId)
+    {
+        try {
+            return $this->commentService->getListCommentPublic($request, $productId);
+        } catch (Exception $e) {
             Log::error(__METHOD__ . ' - ' . __LINE__ . ' : ' . $e->getMessage());
             return _errorSystem();
         }

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateCategoryRequest;
 use App\Http\Requests\GetListCategoryRequest;
+use App\Http\Requests\GetProductsByCategoryRequest;
 use App\Http\Requests\UpdateCategoryRequest;
 use App\Services\CategoryService;
 use Exception;
@@ -80,6 +81,16 @@ class CategoryController extends Controller
     {
         try {
             return $this->categoryService->show($id);
+        } catch (Exception $e) {
+            Log::error(__METHOD__ . ' - ' . __LINE__ . ' : ' . $e->getMessage());
+            return _errorSystem();
+        }
+    }
+
+    public function getCategoryPublic(GetProductsByCategoryRequest $request, $id)
+    {
+        try {
+            return $this->categoryService->getCategoryPublic($request, $id);
         } catch (Exception $e) {
             Log::error(__METHOD__ . ' - ' . __LINE__ . ' : ' . $e->getMessage());
             return _errorSystem();

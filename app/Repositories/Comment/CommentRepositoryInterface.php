@@ -15,4 +15,6 @@ interface CommentRepositoryInterface extends BaseRepositoryInterface
     public function detail($id);
 
     public function getListCommentByProductId($request, $productId);
+
+    public function getListCommentPublic($productId);
 }

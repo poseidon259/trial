@@ -75,5 +75,12 @@ class CategoryRepository extends BaseRepository implements CategoryRepositoryInt
                     ->first();
     }
 
-    
+    public function getCategoryPublic($request, $id)
+    {
+        $qb = $this->_model
+                    ->select('categories.id', 'categories.name')
+                    ->where('categories.id', $id)
+                    ->with(['categoryChildren']);
+        return $qb->first();
+    }
 }

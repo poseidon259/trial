@@ -211,12 +211,12 @@ class ProductRepository extends BaseRepository implements ProductRepositoryInter
     }
 
     /**
-     * Get list product at homepage
+     * Get list product public
      *
      * @param $request
      * @return mixed
      */
-    public function getListAtHomepage($request)
+    public function getListProductPublic($request)
     {
         $url = getenv('IMAGEKIT_URL_ENDPOINT');
 
@@ -307,5 +307,45 @@ class ProductRepository extends BaseRepository implements ProductRepositoryInter
             }])
             ->first()
             ;
+    }
+
+    public function getListProductByCategory($request, $categoryId)
+    {
+        $url = getenv('IMAGEKIT_URL_ENDPOINT');
+
+        $query = $this->_model
+            ->join('product_information', 'products.id', '=', 'product_information.product_id')
+            ->where('products.status', PRODUCT_ACTIVE)
+            ->where('products.category_id', $categoryId)
+            ->select(
+                'products.id',
+                'products.name',
+                'products.category_id',
+                'products.status',
+                'products.created_by',
+                'products.description_list',
+                'products.description_detail',
+                'product_information.product_code',
+                'product_information.sale_price',
+                'product_information.origin_price',
+                'product_information.stock',
+                'products.description_list',
+                'products.description_detail',
+                'products.created_at',
+                'products.updated_at',
+            )
+            ->with(['productImages' => function ($q) use ($url) {
+                return $q->select(
+                    'product_images.id',
+                    'product_images.product_id',
+                    DB::raw('CONCAT("' . $url . '", product_images.image) as image'),
+                    'product_images.type',
+                    'product_images.sort',
+                    'product_images.status'
+                );
+            }])
+        ;
+
+        return $query->orderBy('products.updated_at', 'desc');
     }
 }

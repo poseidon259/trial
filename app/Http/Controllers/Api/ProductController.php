@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateProductRequest;
 use App\Http\Requests\GetListProductHomepageRequest;
 use App\Http\Requests\GetListProductRequest;
+use App\Http\Requests\GetProductsByCategoryRequest;
 use App\Http\Requests\UpdateProductRequest;
 use App\Services\ProductService;
 use Exception;
@@ -91,10 +92,10 @@ class ProductController extends Controller
         }
     }
 
-    public function getListAtHomepage(GetListProductHomepageRequest $request)
+    public function getListProductPublic(GetListProductHomepageRequest $request)
     {
         try {
-            return $this->productService->getListAtHomepage($request);
+            return $this->productService->getListProductPublic($request);
         } catch (Exception $e) {
             Log::error(__METHOD__ . ' - ' . __LINE__ . ' : ' . $e->getMessage());
             return _errorSystem();
@@ -105,6 +106,16 @@ class ProductController extends Controller
     {
         try {
             return $this->productService->detailProductPublic($id);
+        } catch (Exception $e) {
+            Log::error(__METHOD__ . ' - ' . __LINE__ . ' : ' . $e->getMessage());
+            return _errorSystem();
+        }
+    }
+
+    public function getListProductByCategory(GetProductsByCategoryRequest $request, $categoryId)
+    {
+        try {
+            return $this->productService->getListProductByCategory($request, $categoryId);
         } catch (Exception $e) {
             Log::error(__METHOD__ . ' - ' . __LINE__ . ' : ' . $e->getMessage());
             return _errorSystem();

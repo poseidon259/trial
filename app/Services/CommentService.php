@@ -287,4 +287,26 @@ class CommentService
 
         return _success(null, __('messages.create_success'), HTTP_SUCCESS);
     }
+
+    public function getListCommentPublic($request, $productId)
+    {
+        $checkExistsProduct = $this->productRepositoryInterface->find($productId);
+
+        if (!$checkExistsProduct) {
+            return _error(null, __('messages.product_not_found'), HTTP_BAD_REQUEST);
+        }
+
+        $limit = $request->limit ?? LIMIT;
+        $page = $request->page ?? PAGE;
+
+        $comments = $this->commentRepositoryInterface->getListCommentPublic($productId)->paginate($limit, $page);
+
+        return [
+            'comments' => $comments->items(),
+            'total' => $comments->total(),
+            'current_page' => $comments->currentPage(),
+            'last_page' => $comments->lastPage(),
+            'per_page' => $comments->perPage(),
+        ];
+    }
 }

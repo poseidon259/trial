@@ -33,13 +33,19 @@ Route::group(['namespace' => 'api\v1'], function () {
     Route::get('resend_email_verify_account', [AuthController::class, 'resendEmailVerifyAccount'])->middleware('throttle:5,1');
     Route::get('send_email_reset_password', [AuthController::class, 'sendEmailResetPassword'])->middleware('throttle:5,1');
     Route::put('update_password', [AuthController::class, 'updatePassword']);
-    Route::get('list_product', [ProductController::class, 'getListAtHomepage']);
+    Route::get('list_product', [ProductController::class, 'getListProductPublic']);
     Route::get('list_category', [CategoryController::class, 'list']);
     Route::get('list_banner', [BannerController::class, 'getListBannerPublic']);
     Route::get('client/product/{id}', [ProductController::class, 'detailProductPublic']);
-    Route::post('client/product/{id}/comment/create', [CommentController::class, 'createCommentPublic']);
+    Route::get('client/product/{id}/comments', [CommentController::class, 'getListCommentPublic']);
+    Route::get('client/category/{id}', [CategoryController::class, 'getCategoryPublic']);
+    Route::get('client/category/{id}/products', [ProductController::class, 'getListProductByCategory']);
 
     Route::group(['middleware' => 'auth:api'], function () {
+        // client
+        Route::post('client/product/{id}/comment/create', [CommentController::class, 'createCommentPublic']);
+
+        //
         Route::get('profile', [UserController::class, 'profile']);
         Route::post('update_profile', [UserController::class, 'updateProfile']);
         Route::put('change_password', [UserController::class, 'updatePassword']);

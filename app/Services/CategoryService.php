@@ -153,4 +153,15 @@ class CategoryService
         $category = $this->categoryRepostiryInterface->detail($id);
         return _success($category, __('messages.success'), HTTP_SUCCESS);
     }
+
+    public function getCategoryPublic($request, $id)
+    {
+        $category = $this->categoryRepostiryInterface->find($id);
+
+        if (!$category) {
+            return _error(null, __('messages.category_not_found'), HTTP_BAD_REQUEST);
+        }
+
+        return $this->categoryRepostiryInterface->getCategoryPublic($request, $id);
+    }
 }
