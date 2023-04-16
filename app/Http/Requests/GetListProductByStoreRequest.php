@@ -2,8 +2,7 @@
 
 namespace App\Http\Requests;
 
-
-class GetProductsByCategoryRequest extends BaseRequest
+class GetListProductByStoreRequest extends BaseRequest
 {
     /**
      * Get the validation rules that apply to the request.
@@ -16,13 +15,8 @@ class GetProductsByCategoryRequest extends BaseRequest
             'page' => 'nullable|integer',
             'limit' => 'nullable|integer',
             'sort_price' => 'nullable|string',
-            'newest' =>'nullable|boolean',
+            'newest' => 'nullable|boolean',
             'popular' => 'nullable|boolean',
-            'rating' => 'nullable|integer',
-            'price_start' => 'nullable|integer',
-            'price_end' => 'nullable|integer',
-            'date_start' => 'nullable|date',
-            'date_end' => 'nullable|date'
         ];
     }
 }

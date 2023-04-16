@@ -40,4 +40,9 @@ class Store extends Model
         'background_file_id',
         'status',
     ];
+
+    public function products()
+    {
+        return $this->hasMany(Product::class, 'store_id', 'id');
+    }
 }

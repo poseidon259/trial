@@ -16,7 +16,7 @@ class BannerStoreService
      * @var ImageKitService
      */
     private $imageKitService;
-    
+
 
     public function __construct(
         BannerStoreRepositoryInterface $bannerStoreRepositoryInterface,
@@ -93,4 +93,10 @@ class BannerStoreService
         return _success($banners, __('messages.success'), HTTP_SUCCESS);
     }
 
+    public function getListBannerStorePublic($storeId)
+    {
+        $banners = $this->bannerStoreRepositoryInterface->getListBannerStorePublic($storeId);
+
+        return _success($banners, __('messages.success'), HTTP_SUCCESS);
+    }
 }

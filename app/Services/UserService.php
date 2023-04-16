@@ -389,6 +389,8 @@ class UserService
             return _error(null, __('messages.user_not_found'), HTTP_NOT_FOUND);
         }
 
+        $user = $this->userRepositoryInterface->detail($user->id);
+
         return _success($user, __('messages.success'), HTTP_SUCCESS);
     }
 }

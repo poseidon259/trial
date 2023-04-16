@@ -36,10 +36,14 @@ Route::group(['namespace' => 'api\v1'], function () {
     Route::get('list_product', [ProductController::class, 'getListProductPublic']);
     Route::get('list_category', [CategoryController::class, 'list']);
     Route::get('list_banner', [BannerController::class, 'getListBannerPublic']);
+    Route::get('client/store/{id}/banners', [BannerStoreController::class, 'getListBannerStorePublic']);
     Route::get('client/product/{id}', [ProductController::class, 'detailProductPublic']);
     Route::get('client/product/{id}/comments', [CommentController::class, 'getListCommentPublic']);
     Route::get('client/category/{id}', [CategoryController::class, 'getCategoryPublic']);
     Route::get('client/category/{id}/products', [ProductController::class, 'getListProductByCategory']);
+    Route::get('client/stores/homepage', [StoreController::class, 'getStoreHomepage']);
+    Route::get('client/store/{id}', [StoreController::class, 'detailStorePublic']);
+    Route::get('client/store/{id}/products', [ProductController::class, 'getListProductByStore']);
 
     Route::group(['middleware' => 'auth:api'], function () {
         // client

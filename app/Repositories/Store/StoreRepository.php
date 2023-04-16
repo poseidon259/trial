@@ -43,8 +43,8 @@ class StoreRepository extends BaseRepository implements StoreRepositoryInterface
                 'house_number',
                 'description_list',
                 'description_detail',
-                DB::raw('CONCAT("' . $url .'", logo) as logo'),
-                DB::raw('CONCAT("' . $url .'", background_image) as background_image'),
+                DB::raw('CONCAT("' . $url . '", logo) as logo'),
+                DB::raw('CONCAT("' . $url . '", background_image) as background_image'),
                 'status',
                 'created_at',
                 'updated_at'
@@ -67,5 +67,84 @@ class StoreRepository extends BaseRepository implements StoreRepositoryInterface
         }
 
         return $query->orderBy('stores.created_at', 'desc');
+    }
+
+    public function getStoreHomepage()
+    {
+        $url = getenv('IMAGEKIT_URL_ENDPOINT');
+        return $this->_model
+            ->select(
+                'stores.id',
+                'email',
+                'manager_name',
+                'phone_number',
+                'company_name',
+                'province_id',
+                'district_id',
+                'ward_id',
+                'house_number',
+                'description_list',
+                'description_detail',
+                DB::raw('CONCAT("' . $url . '", logo) as logo'),
+                DB::raw('CONCAT("' . $url . '", background_image) as background_image'),
+                'status',
+                'created_at',
+                'updated_at'
+            )
+            ->with(['products' => function ($q) use ($url) {
+                return $q->with(['productImages' => function ($q1) use ($url) {
+                    return $q1->select(
+                        'product_images.id',
+                        'product_images.product_id',
+                        DB::raw('CONCAT("' . $url . '", product_images.image) as image'),
+                    );
+                }]);
+            }])
+            ->whereHas('products', function ($q) {
+                return $q->havingRaw('COUNT(*) >= 3');
+            })
+            ->limit(10)
+            ->orderBy('stores.updated_at', 'DESC')
+            ->get();
+    }
+
+    public function detailStorePublic($id)
+    {
+        $url = getenv('IMAGEKIT_URL_ENDPOINT');
+
+        $query = $this->_model
+            ->select(
+                'stores.id',
+                'stores.email',
+                'stores.manager_name',
+                'stores.phone_number',
+                'stores.company_name',
+                'stores.province_id',
+                'stores.district_id',
+                'stores.ward_id',
+                'stores.house_number',
+                'stores.description_list',
+                'stores.description_detail',
+                DB::raw('CONCAT("' . $url . '", logo) as logo'),
+                DB::raw('CONCAT("' . $url . '", background_image) as background_image'),
+                'stores.status',
+                'stores.created_at',
+                'stores.updated_at'
+            )
+            ->with(['products' => function ($q) use ($url) {
+                return $q->with(['productImages' => function ($q1) use ($url) {
+                    return $q1->select(
+                        'product_images.id',
+                        'product_images.product_id',
+                        DB::raw('CONCAT("' . $url . '", product_images.image) as image'),
+                    );
+                }]);
+            }])
+            ->whereHas('products', function ($q) {
+                return $q->havingRaw('COUNT(*) >= 3');
+            })
+            ->first();
+
+        return $query;
     }
 }

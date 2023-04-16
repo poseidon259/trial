@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateProductRequest;
+use App\Http\Requests\GetListProductByStoreRequest;
 use App\Http\Requests\GetListProductHomepageRequest;
 use App\Http\Requests\GetListProductRequest;
 use App\Http\Requests\GetProductsByCategoryRequest;
@@ -116,6 +117,16 @@ class ProductController extends Controller
     {
         try {
             return $this->productService->getListProductByCategory($request, $categoryId);
+        } catch (Exception $e) {
+            Log::error(__METHOD__ . ' - ' . __LINE__ . ' : ' . $e->getMessage());
+            return _errorSystem();
+        }
+    }
+
+    public function getListProductByStore(GetListProductByStoreRequest $request, $storeId)
+    {
+        try {
+            return $this->productService->getListProductByStore($request, $storeId);
         } catch (Exception $e) {
             Log::error(__METHOD__ . ' - ' . __LINE__ . ' : ' . $e->getMessage());
             return _errorSystem();

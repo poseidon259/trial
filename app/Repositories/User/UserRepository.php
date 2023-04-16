@@ -143,7 +143,7 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
                         'districts.name as district_name',
                         'wards.name as ward_name',
                         'house_number',
-                        DB::raw('CONCAT("' . $url . '", avatar) as avatar'),
+                        DB::raw('(CASE WHEN avatar IS NOT NULL THEN CONCAT("' . $url . '", avatar) ELSE "" END) as avatar'),
                         'gender',
                     )
                     ->with(['userAddress' => function ($q) {

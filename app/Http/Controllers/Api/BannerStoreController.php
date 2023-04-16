@@ -39,8 +39,17 @@ class BannerStoreController extends Controller
     public function list($storeId)
     {
         try {
-            $bannerStore = $this->bannerStoreService->list($storeId);
-            return $bannerStore;
+            return $this->bannerStoreService->list($storeId);
+        } catch (\Exception $e) {
+            Log::error(__METHOD__ . ' - ' . __LINE__ . ' : ' . $e->getMessage());
+            return _errorSystem();
+        }
+    }
+
+    public function getListBannerStorePublic($storeId)
+    {
+        try {
+            return $this->bannerStoreService->getListBannerStorePublic($storeId);
         } catch (\Exception $e) {
             Log::error(__METHOD__ . ' - ' . __LINE__ . ' : ' . $e->getMessage());
             return _errorSystem();

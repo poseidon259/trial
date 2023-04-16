@@ -88,4 +88,24 @@ class StoreController extends Controller
             return _errorSystem();
         }
     }
+
+    public function getStoreHomepage()
+    {
+        try {
+            return $this->storeService->getStoreHomepage();
+        } catch (Exception $e) {
+            Log::error(__METHOD__ . ' - ' . __LINE__ . ' : ' . $e->getMessage());
+            return _errorSystem();
+        }
+    }
+
+    public function detailStorePublic($id)
+    {
+        try {
+            return $this->storeService->detailStorePublic($id);
+        } catch (Exception $e) {
+            Log::error(__METHOD__ . ' - ' . __LINE__ . ' : ' . $e->getMessage());
+            return _errorSystem();
+        }
+    }
 }

@@ -26,7 +26,8 @@ class BannerStoreRepository extends BaseRepository implements BannerStoreReposit
      * @param $userId
      * @return mixed
      */
-    public function checkExists($key, $value, $id) {
+    public function checkExists($key, $value, $id)
+    {
         return $this->_model->where($key, $value)->where('banner_stores.id', '!=', $id)->first();
     }
 
@@ -37,7 +38,8 @@ class BannerStoreRepository extends BaseRepository implements BannerStoreReposit
      * @param $value
      * @return mixed
      */
-    public function findOne($key, $value) {
+    public function findOne($key, $value)
+    {
         return $this->_model->where($key, $value)->first();
     }
 
@@ -46,10 +48,11 @@ class BannerStoreRepository extends BaseRepository implements BannerStoreReposit
      *
      * @return mixed
      */
-    public function getListBanner($storeId) {
+    public function getListBanner($storeId)
+    {
         return $this->_model
-                    ->where('store_id', $storeId)
-                    ->orderBy('sort', 'asc')->get();
+            ->where('store_id', $storeId)
+            ->orderBy('sort', 'asc')->get();
     }
 
     /**
@@ -58,7 +61,8 @@ class BannerStoreRepository extends BaseRepository implements BannerStoreReposit
      * @param $ids
      * @return mixed
      */
-    public function deleteIds($ids) {
+    public function deleteIds($ids)
+    {
         return $this->_model->whereIn('id', $ids)->delete();
     }
 
@@ -67,19 +71,38 @@ class BannerStoreRepository extends BaseRepository implements BannerStoreReposit
      *
      * @return mixed
      */
-    public function list($storeId) {
+    public function list($storeId)
+    {
         $url = getenv('IMAGEKIT_URL_ENDPOINT');
 
         $query = $this->_model
-                ->select(
-                    'id',
-                    DB::raw('CONCAT("'.$url.'", image) as image'),
-                    'sort',
-                    'created_at',
-                    'updated_at')
-                ->where('display', BANNER_ACTIVE)
-                ->where('store_id', $storeId)
-                ->orderBy('sort', 'asc')->get();
+            ->select(
+                'id',
+                DB::raw('CONCAT("' . $url . '", image) as image'),
+                'sort',
+                'created_at',
+                'updated_at')
+            ->where('display', BANNER_ACTIVE)
+            ->where('store_id', $storeId)
+            ->orderBy('sort', 'asc')->get();
+
+        return $query;
+    }
+
+    public function getListBannerStorePublic($storeId)
+    {
+        $url = getenv('IMAGEKIT_URL_ENDPOINT');
+
+        $query = $this->_model
+            ->select(
+                'id',
+                DB::raw('CONCAT("' . $url . '", image) as image'),
+                'sort',
+                'created_at',
+                'updated_at')
+            ->where('display', BANNER_ACTIVE)
+            ->where('store_id', $storeId)
+            ->orderBy('sort', 'asc')->get();
 
         return $query;
     }

@@ -219,4 +219,22 @@ class StoreService
             'per_page' => $stores->perPage(),
         ];
     }
+
+    public function getStoreHomepage()
+    {
+        return $this->storeRepositoryInterface->getStoreHomepage();
+    }
+
+    public function detailStorePublic($id)
+    {
+        $store = $this->storeRepositoryInterface->find($id);
+
+        if (!$store) {
+            return _error(null, __('messages.store_not_found'), HTTP_BAD_REQUEST);
+        }
+
+        $store = $this->storeRepositoryInterface->detailStorePublic($id);
+
+        return _success($store, __('messages.success'), HTTP_SUCCESS);
+    }
 }

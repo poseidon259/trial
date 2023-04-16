@@ -48,13 +48,13 @@ class ProductService
     private CategoryChildRepositoryInterface $categoryChildRepositoryInterface;
 
     public function __construct(
-        ProductRepositoryInterface $productRepositoryInterface,
+        ProductRepositoryInterface            $productRepositoryInterface,
         ProductInformationRepositoryInterface $productInformationRepositoryInterface,
-        ProductImageRepositoryInterface $productImageRepositoryInterface,
-        ImageKitService $imageKitService,
-        MasterFieldRepositoryInterface $masterFieldRepositoryInterface,
-        ChildMasterFieldRepositoryInterface $childMasterFieldRepositoryInterface,
-        CategoryChildRepositoryInterface $categoryChildRepositoryInterface
+        ProductImageRepositoryInterface       $productImageRepositoryInterface,
+        ImageKitService                       $imageKitService,
+        MasterFieldRepositoryInterface        $masterFieldRepositoryInterface,
+        ChildMasterFieldRepositoryInterface   $childMasterFieldRepositoryInterface,
+        CategoryChildRepositoryInterface      $categoryChildRepositoryInterface
     )
     {
         $this->productRepositoryInterface = $productRepositoryInterface;
@@ -397,7 +397,7 @@ class ProductService
         ];
     }
 
-    public  function  detailProductPublic($id)
+    public function detailProductPublic($id)
     {
         $product = $this->productRepositoryInterface->find($id);
         if (!$product) {
@@ -415,6 +415,22 @@ class ProductService
         $page = $request->page ?? PAGE;
 
         $products = $this->productRepositoryInterface->getListProductByCategory($request, $categoryId)->paginate($limit, $page);
+
+        return [
+            'products' => $products->items(),
+            'total' => $products->total(),
+            'current_page' => $products->currentPage(),
+            'last_page' => $products->lastPage(),
+            'per_page' => $products->perPage(),
+        ];
+    }
+
+    public function getListProductByStore($request, $storeId)
+    {
+        $limit = $request->limit ?? LIMIT;
+        $page = $request->page ?? PAGE;
+
+        $products = $this->productRepositoryInterface->getListProductByStore($request, $storeId)->paginate($limit, $page);
 
         return [
             'products' => $products->items(),

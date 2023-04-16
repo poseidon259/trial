@@ -13,4 +13,8 @@ interface StoreRepositoryInterface extends BaseRepositoryInterface
     public function checkExists($key, $value, $id);
 
     public function getListStore($request);
+
+    public function getStoreHomepage();
+
+    public function detailStorePublic($id);
 }
