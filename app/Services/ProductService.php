@@ -397,14 +397,14 @@ class ProductService
         ];
     }
 
-    public function detailProductPublic($id)
+    public function detailProductPublic($request, $id)
     {
         $product = $this->productRepositoryInterface->find($id);
         if (!$product) {
             return _error(null, __('messages.product_not_found'), HTTP_BAD_REQUEST);
         }
 
-        $product = $this->productRepositoryInterface->detailProductPublic($id);
+        $product = $this->productRepositoryInterface->detailProductPublic($request, $id);
 
         return _success($product, __('messages.success'), HTTP_SUCCESS);
     }

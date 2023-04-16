@@ -13,8 +13,33 @@ class CartService
 
     public function __construct(
         CartRepositoryInterface $cartRepository
-    ) {
+    )
+    {
         $this->cartRepository = $cartRepository;
+    }
+
+    public function addToCart($request, $user)
+    {
+        $cart = $this->cartRepository->findOne('user_id', $user->id);
+
+        if (!$cart) {
+            $cart = $this->cartRepository->create(['user_id' => $user->id]);
+        }
+
+        $params = [
+            'product_id' => $request->product_id,
+            'quantity' => $request->quantity
+        ];
+
+        if ($request->child_master_field_id) {
+            $params[] = [
+                'child_master_field_id' => $request->child_master_field_id
+            ];
+        }
+
+        $cart->cartItems()->create($params);
+
+        return _success(null, __('messages.update_cart_success'), HTTP_SUCCESS);
     }
 
     public function update($request, $user)
@@ -27,7 +52,7 @@ class CartService
 
         if (isset($request->items)) {
             $cart->cartItems()->delete();
-            
+
             $cartItems = [];
             foreach ($request->items as $item) {
                 $cartItems[] = [

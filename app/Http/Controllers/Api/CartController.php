@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\AddToCartRequest;
 use App\Http\Requests\UpdateCartRequest;
 use App\Services\CartService;
 use Exception;
@@ -29,6 +30,21 @@ class CartController extends Controller
         try {
             $user = Auth::user();
             $cart = $this->cartService->update($request, $user);
+            DB::commit();
+            return $cart;
+        } catch (Exception $e) {
+            DB::rollBack();
+            Log::error(__METHOD__ . ' - ' . __LINE__ . ' : ' . $e->getMessage());
+            return _errorSystem();
+        }
+    }
+
+    public function addToCart(AddToCartRequest $request)
+    {
+        DB::beginTransaction();
+        try {
+            $user = Auth::user();
+            $cart = $this->cartService->addToCart($request, $user);
             DB::commit();
             return $cart;
         } catch (Exception $e) {

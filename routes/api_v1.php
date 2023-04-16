@@ -48,6 +48,7 @@ Route::group(['namespace' => 'api\v1'], function () {
     Route::group(['middleware' => 'auth:api'], function () {
         // client
         Route::post('client/product/{id}/comment/create', [CommentController::class, 'createCommentPublic']);
+        Route::post('client/add_to_cart', [CartController::class, 'addToCart']);
 
         //
         Route::get('profile', [UserController::class, 'profile']);

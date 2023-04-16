@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateProductRequest;
+use App\Http\Requests\DetailProductPublicRequest;
 use App\Http\Requests\GetListProductByStoreRequest;
 use App\Http\Requests\GetListProductHomepageRequest;
 use App\Http\Requests\GetListProductRequest;
@@ -103,10 +104,10 @@ class ProductController extends Controller
         }
     }
 
-    public function detailProductPublic($id)
+    public function detailProductPublic(DetailProductPublicRequest $request, $id)
     {
         try {
-            return $this->productService->detailProductPublic($id);
+            return $this->productService->detailProductPublic($request, $id);
         } catch (Exception $e) {
             Log::error(__METHOD__ . ' - ' . __LINE__ . ' : ' . $e->getMessage());
             return _errorSystem();

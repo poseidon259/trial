@@ -22,7 +22,7 @@ interface ProductRepositoryInterface extends BaseRepositoryInterface
 
     public function getListProductPublic($request);
 
-    public function detailProductPublic($id);
+    public function detailProductPublic($request, $id);
 
     public function getListProductByCategory($request, $categoryId);
 

@@ -253,11 +253,10 @@ class ProductRepository extends BaseRepository implements ProductRepositoryInter
         return $query->orderBy('products.updated_at', 'desc');
     }
 
-    public function detailProductPublic($id)
+    public function detailProductPublic($request, $id)
     {
         $url = getenv('IMAGEKIT_URL_ENDPOINT');
-
-        return $this->_model
+        $query = $this->_model
             ->join('product_information', 'products.id', '=', 'product_information.product_id')
             ->where('products.status', PRODUCT_ACTIVE)
             ->where('products.id', $id)
@@ -303,8 +302,20 @@ class ProductRepository extends BaseRepository implements ProductRepositoryInter
             }])
             ->withCount('comments')
             ->withAvg('comments as avg_rating', 'rating')
-            ->groupBy('products.id')
-            ->first();
+            ->groupBy('products.id');
+
+        if ($request->child_master_field_id) {
+            $query
+                ->join('child_master_fields', 'child_master_fields.product_id', 'products.id')
+                ->join('master_fields', 'master_fields.id', 'child_master_fields.master_field_id')
+                ->addSelect('master_fields.name as master_field_name',
+                    'child_master_fields.name as child_master_field_name',
+                    'child_master_fields.sale_price as child_sale_price',
+                    'child_master_fields.origin_price as child_origin_price'
+                );
+        }
+
+        return $query->first();
     }
 
     public function getListProductByCategory($request, $categoryId)

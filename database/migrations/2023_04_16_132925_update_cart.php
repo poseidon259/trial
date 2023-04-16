@@ -13,10 +13,8 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::table('order_items', function (Blueprint $table) {
-            $table->bigInteger('master_field_id')->unsigned()->nullable();
+        Schema::table('cart_items', function (Blueprint $table) {
             $table->bigInteger('child_master_field_id')->unsigned()->nullable();
-            $table->foreign('master_field_id')->references('id')->on('master_fields');
             $table->foreign('child_master_field_id')->references('id')->on('child_master_fields');
         });
     }
@@ -28,10 +26,9 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::table('order_items', function (Blueprint $table) {
-            $table->dropForeign(['master_field_id']);
+        Schema::table('cart_items', function (Blueprint $table) {
             $table->dropForeign(['child_master_field_id']);
-            $table->dropColumn(['master_field_id', 'child_master_field_id']);
+            $table->dropColumn(['child_master_field_id']);
         });
     }
 };
