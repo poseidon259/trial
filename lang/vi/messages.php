@@ -69,5 +69,6 @@ return [
     'category_has_product_cant_delete' => 'Danh mục có sản phẩm không thể xóa',
     'category_child_not_exists' => 'Danh mục con không tồn tại',
     'update_cart_success' => 'Cập nhật giỏ hàng thành công',
+    'update_cart_error' => 'Cập nhật giỏ hàng thất bại',
     'order_not_found' => 'Không tìm thấy đơn hàng',
 ];

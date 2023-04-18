@@ -49,13 +49,12 @@ Route::group(['namespace' => 'api\v1'], function () {
         // client
         Route::post('client/product/{id}/comment/create', [CommentController::class, 'createCommentPublic']);
         Route::post('client/add_to_cart', [CartController::class, 'addToCart']);
+        Route::get('client/get_my_cart', [CartController::class, 'getMyCart']);
 
         //
         Route::get('profile', [UserController::class, 'profile']);
         Route::post('update_profile', [UserController::class, 'updateProfile']);
         Route::put('change_password', [UserController::class, 'updatePassword']);
-        Route::put('update_cart', [CartController::class, 'update']);
-        Route::get('my_cart', [CartController::class, 'show']);
 
         Route::prefix('user_address')->group(function () {
             Route::get('list', [UserAddressController::class, 'list']);

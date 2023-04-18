@@ -34,6 +34,7 @@ class AppServiceProvider extends ServiceProvider
             'MasterField',
             'ChildMasterField',
             'Cart',
+            'CartItem',
             'Order',
             'OrderItem',
         ];

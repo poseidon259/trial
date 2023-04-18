@@ -54,11 +54,11 @@ class CartController extends Controller
         }
     }
 
-    public function show()
+    public function getMyCart()
     {
         try {
             $user = Auth::user();
-            $cart = $this->cartService->show($user);
+            $cart = $this->cartService->getMyCart($user);
             return $cart;
         } catch (Exception $e) {
             Log::error(__METHOD__ . ' - ' . __LINE__ . ' : ' . $e->getMessage());

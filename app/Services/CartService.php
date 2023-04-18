@@ -3,27 +3,44 @@
 namespace App\Services;
 
 use App\Repositories\Cart\CartRepositoryInterface;
+use App\Repositories\CartItem\CartItemRepositoryInterface;
+use App\Repositories\ChildMasterField\ChildMasterFieldRepositoryInterface;
 
 class CartService
 {
     /**
      * @var CartRepositoryInterface
      */
-    private $cartRepository;
+    private $cartRepositoryInterface;
+
+    /**
+     * @var CartItemRepositoryInterface
+     */
+    private $cartItemRepositoryInterface;
+
+
+    /**
+     * @var ChildMasterFieldRepositoryInterface
+     */
+    private $childMasterFieldRepositoryInterface;
 
     public function __construct(
-        CartRepositoryInterface $cartRepository
+        CartRepositoryInterface     $cartRepositoryInterface,
+        CartItemRepositoryInterface $cartItemRepositoryInterface,
+        ChildMasterFieldRepositoryInterface $childMasterFieldRepositoryInterface
     )
     {
-        $this->cartRepository = $cartRepository;
+        $this->cartRepositoryInterface = $cartRepositoryInterface;
+        $this->cartItemRepositoryInterface = $cartItemRepositoryInterface;
+        $this->childMasterFieldRepositoryInterface  = $childMasterFieldRepositoryInterface;
     }
 
     public function addToCart($request, $user)
     {
-        $cart = $this->cartRepository->findOne('user_id', $user->id);
+        $cart = $this->cartRepositoryInterface->findOne('user_id', $user->id);
 
         if (!$cart) {
-            $cart = $this->cartRepository->create(['user_id' => $user->id]);
+            $cart = $this->cartRepositoryInterface->create(['user_id' => $user->id]);
         }
 
         $params = [
@@ -31,23 +48,36 @@ class CartService
             'quantity' => $request->quantity
         ];
 
-        if ($request->child_master_field_id) {
-            $params[] = [
-                'child_master_field_id' => $request->child_master_field_id
-            ];
+        if (isset($request->child_master_field_id)) {
+            $params['child_master_field_id'] = $request->child_master_field_id;
+
+            $checkChildMasterField = $this->childMasterFieldRepositoryInterface->getField($request->product_id, $request->child_master_field_id);
+
+            if (!$checkChildMasterField) {
+                return _error(null, __('messages.update_cart_error'), HTTP_BAD_REQUEST);
+            }
         }
 
-        $cart->cartItems()->create($params);
+
+        $existingItem = $this->cartItemRepositoryInterface->getItem($request->product_id, $request->child_master_field_id);
+
+        if ($existingItem) {
+            // Update the quantity of the existing item
+            $quantityUpdated = $existingItem->quantity + $request->quantity;
+            $existingItem->update(['quantity' => $quantityUpdated]);
+        } else {
+            $cart->cartItems()->create($params);
+        }
 
         return _success(null, __('messages.update_cart_success'), HTTP_SUCCESS);
     }
 
     public function update($request, $user)
     {
-        $cart = $this->cartRepository->findOne('user_id', $user->id);
+        $cart = $this->cartRepositoryInterface->findOne('user_id', $user->id);
 
         if (!$cart) {
-            $cart = $this->cartRepository->create(['user_id' => $user->id]);
+            $cart = $this->cartRepositoryInterface->create(['user_id' => $user->id]);
         }
 
         if (isset($request->items)) {
@@ -70,15 +100,15 @@ class CartService
         return _success(null, __('messages.update_cart_success'), HTTP_SUCCESS);
     }
 
-    public function show($user)
+    public function getMyCart($user)
     {
-        $cart = $this->cartRepository->findOne('user_id', $user->id);
+        $cart = $this->cartRepositoryInterface->findOne('user_id', $user->id);
 
         if (!$cart || !$cart->cartItems->count()) {
             return _error(null, __('messages.cart_null'), HTTP_BAD_REQUEST);
         }
 
-        $cart = $this->cartRepository->getCart($user->id);
+        $cart = $this->cartRepositoryInterface->getCart($user->id);
 
         return _success($cart, __('messages.success'), HTTP_SUCCESS);
     }
