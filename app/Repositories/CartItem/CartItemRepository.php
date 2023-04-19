@@ -42,14 +42,20 @@ class CartItemRepository extends BaseRepository implements CartItemRepositoryInt
         return $this->_model->where($key, $value)->first();
     }
 
-    public function getItem($productId, $fieldId)
+    public function getItem($productId, $fieldId, $cartId)
     {
-        $query = $this->_model->where('product_id', $productId);
+        $query = $this->_model
+            ->where('cart_id', $cartId)
+            ->where('product_id', $productId);
 
         if ($fieldId) {
             $query->where('child_master_field_id', $fieldId);
+        } else {
+            $query->whereNull('child_master_field_id');
         }
 
         return $query->first();
     }
+
+
 }

@@ -27,4 +27,6 @@ interface ProductRepositoryInterface extends BaseRepositoryInterface
     public function getListProductByCategory($request, $categoryId);
 
     public function getListProductByStore($request, $storeId);
+
+    public function getInfoProduct($productId, $childMasterFieldId);
 }

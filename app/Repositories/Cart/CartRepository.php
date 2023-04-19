@@ -47,43 +47,38 @@ class CartRepository extends BaseRepository implements CartRepositoryInterface
     {
         $url = getenv('IMAGEKIT_URL_ENDPOINT');
         return $this->_model
-                    ->join('cart_items', 'cart_items.cart_id', '=', 'cart.id')
+            ->select(
+                'cart.id',
+                'cart.user_id'
+            )
+            ->where('cart.user_id', $userId)
+            ->with(['cartItems' => function ($q) use ($url) {
+                return $q
+                    ->leftJoin('child_master_fields', 'child_master_fields.id', '=', 'cart_items.child_master_field_id')
+                    ->leftJoin('master_fields', 'master_fields.id', '=', 'child_master_fields.master_field_id')
                     ->join('product_information as pi', 'pi.product_id', '=', 'cart_items.product_id')
+                    ->join('products as p', 'p.id', '=', 'pi.product_id')
                     ->select(
-                        'cart.id',
-                        DB::raw('SUM((CASE WHEN pi.sale_price IS NOT NULL THEN pi.sale_price ELSE pi.origin_price END) * cart_items.quantity) as sub_price'),
+                        'cart_items.id',
+                        'cart_items.cart_id',
+                        'cart_items.product_id',
+                        'p.name as product_name',
+                        'cart_items.quantity',
+                        DB::raw('CASE WHEN child_master_fields.master_field_id IS NULL THEN pi.sale_price ELSE child_master_fields.sale_price END AS sale_price'),
+                        DB::raw('CASE WHEN child_master_fields.master_field_id IS NULL THEN pi.origin_price ELSE child_master_fields.origin_price END AS origin_price'),
+                        'master_fields.name as master_field_name',
+                        'child_master_fields.name as child_master_field_name',
+                        'cart_items.child_master_field_id as child_master_field_id',
                     )
-                    ->where('cart.user_id', $userId)
-                    ->groupBy('cart.id')
-                    ->with(['cartItems' => function($q) use ($url) {
-                        return $q
-                            ->leftJoin('child_master_fields', 'child_master_fields.id', '=', 'cart_items.id')
-                            ->leftJoin('master_fields', 'master_fields.id', '=', 'child_master_fields.master_field_id')
-                            ->join('product_information as pi', 'pi.product_id', '=', 'cart_items.product_id')
-                            ->join('products as p', 'p.id', '=', 'pi.product_id')
-                            ->select(
-                                'cart_items.id',
-                                'cart_items.cart_id',
-                                'cart_items.product_id',
-                                'p.name as product_name',
-                                'cart_items.quantity',
-                                'pi.sale_price',
-                                'pi.origin_price',
-                                'master_fields.name as master_field_name',
-                                'child_master_fields.name as child_master_field_name'
-                            )
-                            ->with(['productImages' => function($qb) use ($url) {
-                                return $qb->select(
-                                    'product_images.id',
-                                    'product_images.product_id',
-                                    DB::raw('CONCAT("' . $url . '", product_images.image) as image'),
-                                )
-                                ->get()
-                                ;
-                            }])
-                            ;
-                    }])
-                    ->first()
-                    ;
+                    ->with(['productImages' => function ($qb) use ($url) {
+                        return $qb->select(
+                            'product_images.id',
+                            'product_images.product_id',
+                            DB::raw('CONCAT("' . $url . '", product_images.image) as image'),
+                        )
+                            ->get();
+                    }]);
+            }])
+            ->first();
     }
 }

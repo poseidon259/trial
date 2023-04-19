@@ -50,6 +50,8 @@ Route::group(['namespace' => 'api\v1'], function () {
         Route::post('client/product/{id}/comment/create', [CommentController::class, 'createCommentPublic']);
         Route::post('client/add_to_cart', [CartController::class, 'addToCart']);
         Route::get('client/get_my_cart', [CartController::class, 'getMyCart']);
+        Route::post('client/update_quantity_cart', [CartController::class, 'updateQuantity']);
+        Route::delete('client/delete_product_in_cart', [CartController::class, 'deleteProductInCart']);
 
         //
         Route::get('profile', [UserController::class, 'profile']);

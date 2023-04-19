@@ -267,14 +267,28 @@ class ProductRepository extends BaseRepository implements ProductRepositoryInter
                 'products.status',
                 'products.created_by',
                 'products.description_detail',
-                'product_information.product_code',
-                'product_information.sale_price',
-                'product_information.origin_price',
-                'product_information.stock',
                 'products.description_list',
                 'products.created_at',
                 'products.updated_at',
             )
+            ->when($request->child_master_field_id, function ($query) {
+                return $query
+                    ->join('child_master_fields', 'child_master_fields.product_id', 'products.id')
+                    ->join('master_fields', 'master_fields.id', 'child_master_fields.master_field_id')
+                    ->addSelect('master_fields.name as master_field_name',
+                        'child_master_fields.name as child_master_field_name',
+                        'child_master_fields.sale_price',
+                        'child_master_fields.origin_price',
+                        'child_master_fields.stock'
+                    );
+            }, function ($query) {
+                return $query->addSelect(
+                    'product_information.product_code',
+                    'product_information.sale_price',
+                    'product_information.origin_price',
+                    'product_information.stock',
+                );
+            })
             ->with(['productImages' => function ($q) use ($url) {
                 return $q->select(
                     'product_images.id',
@@ -304,16 +318,6 @@ class ProductRepository extends BaseRepository implements ProductRepositoryInter
             ->withAvg('comments as avg_rating', 'rating')
             ->groupBy('products.id');
 
-        if ($request->child_master_field_id) {
-            $query
-                ->join('child_master_fields', 'child_master_fields.product_id', 'products.id')
-                ->join('master_fields', 'master_fields.id', 'child_master_fields.master_field_id')
-                ->addSelect('master_fields.name as master_field_name',
-                    'child_master_fields.name as child_master_field_name',
-                    'child_master_fields.sale_price as child_sale_price',
-                    'child_master_fields.origin_price as child_origin_price'
-                );
-        }
 
         return $query->first();
     }
@@ -434,6 +438,37 @@ class ProductRepository extends BaseRepository implements ProductRepositoryInter
         if ($request->popular) {
             // do something
         }
+
+        return $query;
+    }
+
+    public function getInfoProduct($productId, $childMasterFieldId)
+    {
+        $query = $this->_model
+            ->leftJoin('child_master_fields', 'child_master_fields.product_id', '=', 'products.id')
+            ->join('product_information', 'products.id', '=', 'product_information.product_id')
+            ->where('products.status', PRODUCT_ACTIVE)
+            ->where('products.id', $productId)
+            ->when($childMasterFieldId, function ($query, $childMasterFieldId) {
+                return $query->where('child_master_fields.id', $childMasterFieldId);
+            })
+            ->when($childMasterFieldId, function ($query) {
+                return $query->select(
+                    'products.id',
+                    'child_master_fields.sale_price',
+                    'child_master_fields.origin_price',
+                    'child_master_fields.stock',
+                );
+            }, function ($query) {
+                return $query->select(
+                    'products.id',
+                    'product_information.product_code',
+                    'product_information.sale_price',
+                    'product_information.origin_price',
+                    'product_information.stock',
+                );
+            })
+            ->first();
 
         return $query;
     }

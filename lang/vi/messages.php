@@ -71,4 +71,7 @@ return [
     'update_cart_success' => 'Cập nhật giỏ hàng thành công',
     'update_cart_error' => 'Cập nhật giỏ hàng thất bại',
     'order_not_found' => 'Không tìm thấy đơn hàng',
+    'cart_null' => 'Giỏ hàng trống',
+    'over_quantity_in_stock' => 'Quá số lượng tồn kho',
+    'select_master_field' => 'Vui lòng chọn option'
 ];

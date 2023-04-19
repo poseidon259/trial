@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AddToCartRequest;
+use App\Http\Requests\DeleteProductInCartRequest;
 use App\Http\Requests\UpdateCartRequest;
 use App\Services\CartService;
 use Exception;
@@ -20,7 +21,8 @@ class CartController extends Controller
 
     public function __construct(
         CartService $cartService
-    ) {
+    )
+    {
         $this->cartService = $cartService;
     }
 
@@ -61,6 +63,36 @@ class CartController extends Controller
             $cart = $this->cartService->getMyCart($user);
             return $cart;
         } catch (Exception $e) {
+            Log::error(__METHOD__ . ' - ' . __LINE__ . ' : ' . $e->getMessage());
+            return _errorSystem();
+        }
+    }
+
+    public function updateQuantity(AddToCartRequest $request)
+    {
+        DB::beginTransaction();
+        try {
+            $user = Auth::user();
+            $cart = $this->cartService->updateQuantity($request, $user);
+            DB::commit();
+            return $cart;
+        } catch (Exception $e) {
+            DB::rollBack();
+            Log::error(__METHOD__ . ' - ' . __LINE__ . ' : ' . $e->getMessage());
+            return _errorSystem();
+        }
+    }
+
+    public function deleteProductInCart(DeleteProductInCartRequest $request)
+    {
+        DB::beginTransaction();
+        try {
+            $user = Auth::user();
+            $cart = $this->cartService->deleteProductInCart($request, $user);
+            DB::commit();
+            return $cart;
+        } catch (Exception $e) {
+            DB::rollBack();
             Log::error(__METHOD__ . ' - ' . __LINE__ . ' : ' . $e->getMessage());
             return _errorSystem();
         }

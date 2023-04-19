@@ -12,5 +12,5 @@ interface CartItemRepositoryInterface extends BaseRepositoryInterface
 
     public function findOne($key, $value);
 
-    public function getItem($productId, $fieldId);
+    public function getItem($productId, $fieldId, $cartId);
 }
