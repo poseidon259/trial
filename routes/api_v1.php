@@ -27,6 +27,9 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::group(['namespace' => 'api\v1'], function () {
+    Route::get('test', function () {
+        return 'test';
+    });
     Route::post('login', [AuthController::class, 'login'])->name('login');
     Route::post('register', [AuthController::class, 'register']);
     Route::get('verify_account', [AuthController::class, 'verifyAccount']);

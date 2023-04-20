@@ -32,8 +32,8 @@ class RouteServiceProvider extends ServiceProvider
         $this->routes(function () {
             $this->mapApiV1Routes();
 
-            // Route::middleware('web')
-            //     ->group(base_path('routes/web.php'));
+//             Route::middleware('web')
+//                 ->group(base_path('routes/web.php'));
         });
     }
 
