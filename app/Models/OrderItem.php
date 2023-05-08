@@ -25,4 +25,9 @@ class OrderItem extends Model
         'created_at',
         'updated_at',
     ];
+
+    public function productImages()
+    {
+        return $this->hasMany(ProductImage::class, 'product_id', 'product_id');
+    }
 }

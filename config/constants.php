@@ -88,5 +88,11 @@ define('SLUG_PERMISSION_USER', 'user');
 
 //order
 define('ORDER_NEW', 1);
+define('ORDER_PAID', 2);
+define('ORDER_SHIPPING', 3);
+define('ORDER_DELIVERED', 4);
+define('ORDER_CANCELLED', 5);
+
 define('DELIVERY_FEE', 30000);
 
+define('VNPAY_CODE_LENGTH', 12);

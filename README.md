@@ -1,8 +1,9 @@
-- Docker
-    - docker-compose up -d 
-    - docker image prune -af
-    - docker-compose down
-    - docker-compose exec php bash
+-Docker
+- docker-compose up -d
+- docker image prune -af
+- docker-compose down
+- docker-compose exec php bash
+
 - Init
     - in docker-compose exec php bash
     - composer install

@@ -203,4 +203,18 @@ class CartService
 
         return _success(null, __('messages.update_cart_success'), HTTP_SUCCESS);
     }
+
+    public function getItemInCart($request, $user)
+    {
+        $cart = $this->cartRepositoryInterface->findOne('user_id', $user->id);
+
+        if (!$cart) {
+            return _error(null, __('messages.cart_not_exists'), HTTP_BAD_REQUEST);
+        }
+
+        $items = $this->cartRepositoryInterface->getItemInCart($request, $user->id);
+        $items['shipping_fee'] = DELIVERY_FEE;
+
+        return _success($items, __('messages.success'), HTTP_SUCCESS);
+    }
 }

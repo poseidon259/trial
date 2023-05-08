@@ -73,5 +73,11 @@ return [
     'order_not_found' => 'Không tìm thấy đơn hàng',
     'cart_null' => 'Giỏ hàng trống',
     'over_quantity_in_stock' => 'Quá số lượng tồn kho',
-    'select_master_field' => 'Vui lòng chọn option'
+    'select_master_field' => 'Vui lòng chọn option',
+    'vnpay_message_success' => 'Thanh toán thành công',
+    'vnpay_message_error' => 'Thanh toán thất bại',
+    'vnpay_message_signature_error' => 'Chữ ký không hợp lệ',
+    'order_status_invalid' => 'Trạng thái đơn hàng không hợp lệ',
+    'order_updated_success' => 'Cập nhập đơn hàng thành công',
+    'order_updated_fail' => 'Cập nhập đơn hàng thất bại'
 ];

@@ -37,6 +37,9 @@ class AppServiceProvider extends ServiceProvider
             'CartItem',
             'Order',
             'OrderItem',
+            'Province',
+            'District',
+            'Ward'
         ];
 
         foreach ($repositories as $repo) {

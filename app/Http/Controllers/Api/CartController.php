@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AddToCartRequest;
 use App\Http\Requests\DeleteProductInCartRequest;
+use App\Http\Requests\GetItemInCartRequest;
 use App\Http\Requests\UpdateCartRequest;
 use App\Services\CartService;
 use Exception;
@@ -93,6 +94,18 @@ class CartController extends Controller
             return $cart;
         } catch (Exception $e) {
             DB::rollBack();
+            Log::error(__METHOD__ . ' - ' . __LINE__ . ' : ' . $e->getMessage());
+            return _errorSystem();
+        }
+    }
+
+    public function getItemInCart(GetItemInCartRequest $request)
+    {
+        try {
+            $user = Auth::user();
+            $cart = $this->cartService->getItemInCart($request, $user);
+            return $cart;
+        } catch (Exception $e) {
             Log::error(__METHOD__ . ' - ' . __LINE__ . ' : ' . $e->getMessage());
             return _errorSystem();
         }

@@ -15,4 +15,8 @@ interface OrderRepositoryInterface extends BaseRepositoryInterface
     public function detail($id);
 
     public function getListOrder($request);
+
+    public function detailOrderPublic($id, $userId);
+
+    public function listOrderHistory($request, $userId);
 }

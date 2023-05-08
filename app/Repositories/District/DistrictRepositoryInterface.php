@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Repositories\Cart;
+namespace App\Repositories\District;
 
 use App\Repositories\Base\BaseRepositoryInterface;
 
-interface CartRepositoryInterface extends BaseRepositoryInterface
+interface DistrictRepositoryInterface extends BaseRepositoryInterface
 {
     public function getModel();
 
@@ -12,7 +12,5 @@ interface CartRepositoryInterface extends BaseRepositoryInterface
 
     public function findOne($key, $value);
 
-    public function getCart($userId);
-
-    public function getItemInCart($request, $userId);
+    public function getDistrictsByProvince($provinceId);
 }

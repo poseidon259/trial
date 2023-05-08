@@ -13,6 +13,7 @@ use App\Http\Controllers\Api\ProductFavoriteController;
 use App\Http\Controllers\Api\UserAddressController;
 use App\Http\Controllers\Api\StoreController;
 use App\Http\Controllers\Api\UserController;
+use App\Http\Controllers\Api\AddressController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -47,14 +48,23 @@ Route::group(['namespace' => 'api\v1'], function () {
     Route::get('client/stores/homepage', [StoreController::class, 'getStoreHomepage']);
     Route::get('client/store/{id}', [StoreController::class, 'detailStorePublic']);
     Route::get('client/store/{id}/products', [ProductController::class, 'getListProductByStore']);
+    Route::get('public/provinces', [AddressController::class, 'getProvinces']);
+    Route::get('public/districts/{provinceId}', [AddressController::class, 'getDistricts']);
+    Route::get('public/wards/{districtId}', [AddressController::class, 'getWards']);
+    Route::get('public/address/{key}/{id}', [AddressController::class, 'getAddress']);
+
 
     Route::group(['middleware' => 'auth:api'], function () {
         // client
+        Route::post('client/order', [OrderController::class, 'createOrderByUser']);
         Route::post('client/product/{id}/comment/create', [CommentController::class, 'createCommentPublic']);
         Route::post('client/add_to_cart', [CartController::class, 'addToCart']);
         Route::get('client/get_my_cart', [CartController::class, 'getMyCart']);
         Route::post('client/update_quantity_cart', [CartController::class, 'updateQuantity']);
         Route::delete('client/delete_product_in_cart', [CartController::class, 'deleteProductInCart']);
+        Route::get('client/get_items_in_cart', [CartController::class, 'getItemInCart']);
+        Route::get('client/order/{id}', [OrderController::class, 'detailOrderPublic']);
+        Route::get('client/order_history', [OrderController::class, 'listOrderHistory']);
 
         //
         Route::get('profile', [UserController::class, 'profile']);
@@ -136,6 +146,9 @@ Route::group(['namespace' => 'api\v1'], function () {
             Route::get('show/{id}', [OrderController::class, 'show']);
             Route::post('create', [OrderController::class, 'create']);
             Route::delete('delete/{id}', [OrderController::class, 'delete']);
+            Route::post('/checkout/payment_vn_pay/{orderId}', [OrderController::class, 'paymentVNPay']);
+            Route::get('/checkout/check/payment_vn_pay', [OrderController::class, 'checkPaymentVnpay']);
+            Route::get('/checkout/ipn_vn_pay', [OrderController::class, 'ipnVNPay']);
         });
     });
 });
