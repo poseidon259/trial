@@ -48,9 +48,11 @@ class UserService
             return _error(null, __('messages.phone_number_exists'), HTTP_BAD_REQUEST);
         }
 
-        $checkExistsUserName = $this->userRepositoryInterface->checkExists('user_name', $request->user_name, $user->id);
-        if ($checkExistsUserName) {
-            return _error(null, __('messages.user_name_exists'), HTTP_BAD_REQUEST);
+        if (isset($request->user_name)) {
+            $checkExistsUserName = $this->userRepositoryInterface->checkExists('user_name', $request->user_name, $user->id);
+            if ($checkExistsUserName) {
+                return _error(null, __('messages.user_name_exists'), HTTP_BAD_REQUEST);
+            }
         }
 
         $params = [
@@ -120,9 +122,11 @@ class UserService
             return _error(null, __('messages.email_exists'), HTTP_BAD_REQUEST);
         }
 
-        $checkExistsUserName = $this->userRepositoryInterface->findOne('user_name', $request->user_name);
-        if ($checkExistsUserName) {
-            return _error(null, __('messages.user_name_exists'), HTTP_BAD_REQUEST);
+        if (isset($request->user_name)) {
+            $checkExistsUserName = $this->userRepositoryInterface->findOne('user_name', $request->user_name);
+            if ($checkExistsUserName) {
+                return _error(null, __('messages.user_name_exists'), HTTP_BAD_REQUEST);
+            }
         }
 
         $checkExistsPhoneNumber = $this->userRepositoryInterface->findOne('phone_number', $request->phone_number);
@@ -130,17 +134,12 @@ class UserService
             return _error(null, __('messages.phone_number_exists'), HTTP_BAD_REQUEST);
         }
 
-        $password = $request->password;
-        if (!$request->password) {
-            $password = Str::random(10);
-        }
-
         $params = [
             'email' => $request->email,
             'first_name' => $request->first_name,
             'last_name' => $request->last_name,
-            'password' => Hash::make($password),
-            'role_id' => $request->role_id,
+            'password' => Hash::make($request->password),
+            'role_id' => ROLE_USER,
             'postal_code' => $request->postal_code,
             'province_id' => $request->province_id,
             'district_id' => $request->district_id,
@@ -175,10 +174,9 @@ class UserService
         $data = [
             'name' => $user->first_name . ' ' . $user->last_name,
             'email' => $user->email,
-            'user_name' => $user->user_name,
             'phone_number' => $user->phone_number,
-            'password' => $password,
-            'url' => $request->role_id == ROLE_ADMIN ? env('ADMIN_URL') : env('STORE_URL')
+            'password' => $request->password,
+            'url' => getenv('CUSTOMER_URL')
         ];
 
         $this->mailService->sendEmail(

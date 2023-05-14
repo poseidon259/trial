@@ -72,4 +72,25 @@ class ChildMasterFieldRepository extends BaseRepository implements ChildMasterFi
     {
         return $this->_model->where('product_id', $productId)->where('id', $fieldId)->first();
     }
+
+    public function getListChildMasterField($productId, $fieldId)
+    {
+        return $this->_model
+            ->where('product_id', $productId)
+            ->where('master_field_id', $fieldId)
+            ->select(
+                'id',
+                'name',
+                'sale_price',
+                'origin_price',
+                'stock',
+                'product_code',
+            )
+            ->pluck('id');
+    }
+
+    public function deleteChildMasterField($ids)
+    {
+        return $this->_model->whereIn('child_master_fields.id', $ids)->delete();
+    }
 }

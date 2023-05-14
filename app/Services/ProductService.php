@@ -55,8 +55,7 @@ class ProductService
         MasterFieldRepositoryInterface        $masterFieldRepositoryInterface,
         ChildMasterFieldRepositoryInterface   $childMasterFieldRepositoryInterface,
         CategoryChildRepositoryInterface      $categoryChildRepositoryInterface
-    )
-    {
+    ) {
         $this->productRepositoryInterface = $productRepositoryInterface;
         $this->productInformationRepositoryInterface = $productInformationRepositoryInterface;
         $this->productImageRepositoryInterface = $productImageRepositoryInterface;
@@ -68,10 +67,12 @@ class ProductService
 
     public function create($request, $user)
     {
-        $checkExists = $this->productInformationRepositoryInterface->findOne('product_code', $request->product_code);
+        if ($request->product_code) {
+            $checkExists = $this->productInformationRepositoryInterface->findOne('product_code', $request->product_code);
 
-        if ($checkExists) {
-            return _error(null, __('messages.product_code_exists'), HTTP_BAD_REQUEST);
+            if ($checkExists) {
+                return _error(null, __('messages.product_code_exists'), HTTP_BAD_REQUEST);
+            }
         }
 
         if ($request->category_child_id) {
@@ -105,7 +106,7 @@ class ProductService
         if (isset($request->images)) {
             $images = [];
             foreach ($request->images as $index => $image) {
-                $file = $image['image'];
+                $file = $image;
                 $fileName = $file->getClientOriginalName();
                 $options = [
                     'folder' => self::PRODUCT_FOLDER,
@@ -116,9 +117,9 @@ class ProductService
                     'product_id' => $product->id,
                     'image' => $uploadFile['filePath'],
                     'file_id' => $uploadFile['fileId'],
-                    'type' => $image['type'],
-                    'sort' => $image['sort'] ?? $index,
-                    'status' => $image['status'],
+                    'type' => 'image',
+                    'sort' => $index,
+                    'status' =>  STATUS_ACTIVE,
                 ];
             }
         }
@@ -128,30 +129,24 @@ class ProductService
         }
 
         if (isset($request->master_fields)) {
+            $parentParams = [
+                'name' => 'Dung tích',
+                'product_id' => $product->id,
+            ];
+            $field = $this->masterFieldRepositoryInterface->create($parentParams);
+
             foreach ($request->master_fields as $masterField) {
-                $parentParams = [
+                $childParams = [
                     'name' => $masterField['name'],
                     'product_id' => $product->id,
+                    'master_field_id' => $field->id,
+                    'sale_price' => $masterField['sale_price'],
+                    'origin_price' => $masterField['origin_price'],
+                    'stock' => $masterField['stock'],
+                    'created_at' => now(),
+                    'updated_at' => now(),
                 ];
-
-                $field = $this->masterFieldRepositoryInterface->create($parentParams);
-
-                if (isset($masterField['childs'])) {
-                    $childParams = [];
-                    foreach ($masterField['childs'] as $child) {
-                        $childParams[] = [
-                            'name' => $child['name'],
-                            'product_id' => $product->id,
-                            'master_field_id' => $field->id,
-                            'sale_price' => $child['sale_price'],
-                            'origin_price' => $child['origin_price'],
-                            'stock' => $child['stock'],
-                            'created_at' => now(),
-                            'updated_at' => now(),
-                        ];
-                    }
-                    $this->childMasterFieldRepositoryInterface->insert($childParams);
-                }
+                $this->childMasterFieldRepositoryInterface->create($childParams);
             }
         }
 
@@ -165,9 +160,11 @@ class ProductService
             return _error(null, __('messages.product_not_found'), HTTP_NOT_FOUND);
         }
 
-        $checkExists = $this->productInformationRepositoryInterface->checkExists('product_code', $request->product_code, $id);
-        if ($checkExists) {
-            return _error(null, __('messages.product_code_exists'), HTTP_BAD_REQUEST);
+        if ($request->product_code) {
+            $checkExists = $this->productInformationRepositoryInterface->checkExists('product_code', $request->product_code, $id);
+            if ($checkExists) {
+                return _error(null, __('messages.product_code_exists'), HTTP_BAD_REQUEST);
+            }
         }
 
         if ($request->category_child_id) {
@@ -187,10 +184,10 @@ class ProductService
             'status' => $request->status,
             'created_by' => $user->id,
         ];
-        $product = $this->productRepositoryInterface->update($id, $newProduct);
+        $this->productRepositoryInterface->update($id, $newProduct);
 
         $newProductInformation = [
-            'product_id' => $product->id,
+            'product_id' => $oldProduct->id,
             'sale_price' => $request->sale_price,
             'origin_price' => $request->origin_price,
             'product_code' => $request->product_code,
@@ -204,7 +201,7 @@ class ProductService
 
             $images = [];
             foreach ($request->images as $index => $image) {
-                $file = $image['image'];
+                $file = $image;
                 $fileName = $file->getClientOriginalName();
                 $options = [
                     'folder' => self::PRODUCT_FOLDER,
@@ -212,12 +209,12 @@ class ProductService
                 $uploadFile = $this->imageKitService->upload($file, $fileName, $options);
 
                 $images[] = [
-                    'product_id' => $product->id,
+                    'product_id' => $oldProduct->id,
                     'image' => $uploadFile['filePath'],
                     'file_id' => $uploadFile['fileId'],
-                    'type' => $image['type'],
-                    'sort' => $image['sort'] ?? $index,
-                    'status' => $image['status'],
+                    'type' => 'image',
+                    'sort' => $index,
+                    'status' => STATUS_ACTIVE,
                 ];
             }
 
@@ -229,81 +226,58 @@ class ProductService
         }
 
         if (isset($request->master_fields)) {
-            foreach ($request->master_fields as $masterField) {
+            $masterField = $this->masterFieldRepositoryInterface->findOne('product_id', $oldProduct->id);
 
-                if ($masterField['is_delete'] ?? false) {
-                    if ($masterField['is_delete'] == IS_DELETE) {
-                        $this->masterFieldRepositoryInterface->delete($masterField['id']);
+            if (!$masterField) {
+                $parentParams = [
+                    'name' => 'Dung tích',
+                    'product_id' => $oldProduct->id,
+                ];
+
+                $masterField = $this->masterFieldRepositoryInterface->create($parentParams);
+            }
+
+            $childParams = [];
+            foreach ($request->master_fields as $child) {
+                if (!array_key_exists('id', $child)) {
+                    $childParams[] = [
+                        'name' => $child['name'],
+                        'product_id' => $oldProduct->id,
+                        'master_field_id' => $masterField->id,
+                        'sale_price' => $child['sale_price'],
+                        'origin_price' => $child['origin_price'],
+                        'stock' => $child['stock'],
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ];
+                } else {
+                    $newUpdate[] = (int) $child['id'];
+                    $oldChildMasterField = $this->childMasterFieldRepositoryInterface->getListChildMasterField($oldProduct->id, $masterField->id);
+                    $idsDelete = array_diff($oldChildMasterField->toArray(), $newUpdate);
+                    $idsUpdate = array_intersect($oldChildMasterField->toArray(), $newUpdate);
+
+                    if (!empty($idsDelete)) {
+                        $this->childMasterFieldRepositoryInterface->deleteChildMasterField($idsDelete);
                     }
 
-                    if ($masterField['is_delete'] == IS_ADD) {
-                        $parentParams = [
-                            'name' => $masterField['name'],
-                            'product_id' => $product->id,
-                        ];
-
-                        $field = $this->masterFieldRepositoryInterface->create($parentParams);
-
-                        if (isset($masterField['childs'])) {
-                            $childParams = [];
-                            foreach ($masterField['childs'] as $child) {
-                                $childParams[] = [
-                                    'name' => $child['name'],
-                                    'product_id' => $product->id,
-                                    'master_field_id' => $field->id,
-                                    'sale_price' => $child['sale_price'],
-                                    'origin_price' => $child['origin_price'],
-                                    'stock' => $child['stock'],
-                                    'created_at' => now(),
-                                    'updated_at' => now(),
-                                ];
-                            }
-                            $this->childMasterFieldRepositoryInterface->insert($childParams);
-                        }
-                    }
-
-                    if ($masterField['is_delete'] == IS_UPDATE) {
-
-                        $this->masterFieldRepositoryInterface->update($masterField['id'], ['name' => $masterField['name']]);
-
-                        if (isset($masterField['childs'])) {
-                            $childParams = [];
-                            foreach ($masterField['childs'] as $child) {
-                                if ($child['is_delete'] ?? false) {
-                                    if ($child['is_delete'] == IS_DELETE) {
-                                        $this->childMasterFieldRepositoryInterface->delete($child['id']);
-                                    }
-
-                                    if ($child['is_delete'] == IS_ADD) {
-                                        $childParams = [
-                                            'name' => $child['name'],
-                                            'product_id' => $product->id,
-                                            'master_field_id' => $masterField['id'],
-                                            'sale_price' => $child['sale_price'],
-                                            'origin_price' => $child['origin_price'],
-                                            'stock' => $child['stock'],
-                                            'created_at' => now(),
-                                            'updated_at' => now(),
-                                        ];
-
-                                        $this->childMasterFieldRepositoryInterface->create($childParams);
-                                    }
-
-                                    if ($child['is_delete'] == IS_UPDATE) {
-                                        $updateParams = [
-                                            'name' => $child['name'],
-                                            'sale_price' => $child['sale_price'],
-                                            'origin_price' => $child['origin_price'],
-                                            'stock' => $child['stock'],
-                                        ];
-
-                                        $this->childMasterFieldRepositoryInterface->update($child['id'], $updateParams);
-                                    }
-                                }
-                            }
+                    if (!empty($idsUpdate)) {
+                        foreach ($idsUpdate as $id) {
+                            $this->childMasterFieldRepositoryInterface->update($id, [
+                                'name' => $child['name'],
+                                'product_id' => $oldProduct->id,
+                                'master_field_id' => $masterField->id,
+                                'sale_price' => $child['sale_price'],
+                                'origin_price' => $child['origin_price'],
+                                'stock' => $child['stock'],
+                                'updated_at' => now(),
+                            ]);
                         }
                     }
                 }
+            }
+
+            if (!empty($childParams)) {
+                $this->childMasterFieldRepositoryInterface->insert($childParams);
             }
         } else {
             $product = $this->productRepositoryInterface->find($id);

@@ -63,6 +63,7 @@ class AuthService
             $data = [
                 'access_token' => $tokenResult->accessToken,
                 'token_type' => 'Bearer',
+                'role' => $user->role_id
             ];
 
             return _success($data, __('messages.login_success'), HTTP_SUCCESS);
@@ -96,6 +97,7 @@ class AuthService
             $data = [
                 'access_token' => $tokenResult->accessToken,
                 'token_type' => 'Bearer',
+                'role' => $user->role_id
             ];
 
             return _success($data, __('messages.login_success'), HTTP_SUCCESS);
@@ -129,6 +131,7 @@ class AuthService
             $data = [
                 'access_token' => $tokenResult->accessToken,
                 'token_type' => 'Bearer',
+                'role' => $user->role_id
             ];
 
             return _success($data, __('messages.login_success'), HTTP_SUCCESS);

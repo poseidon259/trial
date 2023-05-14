@@ -58,10 +58,12 @@ class ProductRepository extends BaseRepository implements ProductRepositoryInter
 
         $query = $this->_model
             ->join('product_information', 'products.id', '=', 'product_information.product_id')
+            ->join('categories', 'products.category_id', '=', 'categories.id')
             ->select(
                 'products.id',
                 'products.name',
                 'products.category_id',
+                'categories.name as category_name',
                 'products.status',
                 'products.created_by',
                 'products.description_list',

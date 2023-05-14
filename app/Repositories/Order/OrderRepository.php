@@ -216,6 +216,6 @@ class OrderRepository extends BaseRepository implements OrderRepositoryInterface
             $query->whereBetween('created_at', [$request->start_date, $request->end_date]);
         }
 
-        return $query;
+        return $query->orderBy('created_at', 'desc');
     }
 }

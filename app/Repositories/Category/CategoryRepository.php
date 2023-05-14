@@ -25,7 +25,8 @@ class CategoryRepository extends BaseRepository implements CategoryRepositoryInt
      * @param $userId
      * @return mixed
      */
-    public function checkExists($key, $value, $id) {
+    public function checkExists($key, $value, $id)
+    {
         return $this->_model->where($key, $value)->where('categories.id', '!=', $id)->first();
     }
 
@@ -36,7 +37,8 @@ class CategoryRepository extends BaseRepository implements CategoryRepositoryInt
      * @param $value
      * @return mixed
      */
-    public function findOne($key, $value) {
+    public function findOne($key, $value)
+    {
         return $this->_model->where($key, $value)->first();
     }
 
@@ -47,14 +49,15 @@ class CategoryRepository extends BaseRepository implements CategoryRepositoryInt
      * @param $request
      * @return mixed
      */
-    public function getListCategory($request) {
+    public function getListCategory($request)
+    {
         $url = getenv('IMAGEKIT_URL_ENDPOINT');
         $query = $this->_model
-                    ->select(
-                        'id',
-                        'name',
-                        DB::raw("CONCAT('$url', image) as image")
-                    );
+            ->select(
+                'id',
+                'name',
+                DB::raw("CONCAT('$url', image) as image")
+            );
 
         return $query->orderBy('categories.id', 'desc');
     }
@@ -65,22 +68,28 @@ class CategoryRepository extends BaseRepository implements CategoryRepositoryInt
      * @param $id
      * @return mixed
      */
-    public function detail($id) {
+    public function detail($id)
+    {
+        $url = getenv('IMAGEKIT_URL_ENDPOINT');
         return $this->_model
-                    ->select('categories.id', 'categories.name')
-                    ->with(['categoryChildren' => function ($query) {
-                        return $query->select('category_child.id', 'category_child.name', 'category_child.category_id');
-                    }])
-                    ->where('categories.id', $id)
-                    ->first();
+            ->select(
+                'categories.id',
+                'categories.name',
+                DB::raw("CONCAT('$url', categories.image) as image"),
+            )
+            ->with(['categoryChildren' => function ($query) {
+                return $query->select('category_child.id', 'category_child.name', 'category_child.category_id');
+            }])
+            ->where('categories.id', $id)
+            ->first();
     }
 
     public function getCategoryPublic($request, $id)
     {
         $qb = $this->_model
-                    ->select('categories.id', 'categories.name')
-                    ->where('categories.id', $id)
-                    ->with(['categoryChildren']);
+            ->select('categories.id', 'categories.name')
+            ->where('categories.id', $id)
+            ->with(['categoryChildren']);
         return $qb->first();
     }
 }

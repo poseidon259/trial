@@ -15,4 +15,8 @@ interface ChildMasterFieldRepositoryInterface extends BaseRepositoryInterface
     public function detail($productId, $id);
 
     public function getField($productId, $fieldId);
+
+    public function getListChildMasterField($productId, $fieldId);
+
+    public function deleteChildMasterField($id);
 }

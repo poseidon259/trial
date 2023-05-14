@@ -101,6 +101,7 @@ Route::group(['namespace' => 'api\v1'], function () {
             Route::post('create', [CategoryController::class, 'create']);
             Route::post('update/{id}', [CategoryController::class, 'update']);
             Route::delete('delete/{id}', [CategoryController::class, 'delete']);
+            Route::get('list', [CategoryController::class, 'list']);
 
             Route::prefix('{categoryId}/child')->group(function () {
                 Route::post('create', [CategoryChildController::class, 'create']);

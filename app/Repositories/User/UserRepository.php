@@ -50,12 +50,14 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
      */
     public function getListUser($request)
     {
+        $url = getenv('IMAGEKIT_URL_ENDPOINT');
         $keyword = strtolower($request->keyword);
         $keyword = str_replace(' ', '', $keyword);
         $keyword = str_replace(',', '', $keyword);
 
         $query = $this->_model
             ->join('roles', 'roles.id', '=', 'users.role_id')
+            ->where('users.role_id', ROLE_USER)
             ->select(
                 'users.id',
                 'email',
@@ -75,8 +77,8 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
                 'district_id',
                 'ward_id',
                 'house_number',
-                'avatar',
-                'gender'
+                'gender',
+                DB::raw("CONCAT('{$url}', avatar) as avatar")
             );
 
         if ($request->status) {

@@ -30,7 +30,7 @@ define('LOGIN_USER_NAME', 2);
 define('LOGIN_PHONE_NUMBER', 3);
 
 // user
-define('INACTIVE', 0);
+define('INACTIVE', 2);
 define('ACTIVE', 1);
 
 // Role
@@ -56,9 +56,11 @@ define('ADDRESS_NOT_DEFAULT', 0);
 define('LIMIT_ADDRESS', 5);
 
 // product
-define('PRODUCT_INACTIVE', 0);
+define('PRODUCT_INACTIVE', 2);
 define('PRODUCT_ACTIVE', 1);
-define('PRODUCT_PENDING', 2);
+
+define('STATUS_ACTIVE', 1);
+define('STATUS_INACTIVE', 0);
 
 // product image
 define('IS_DELETE', 1);

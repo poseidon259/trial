@@ -228,10 +228,32 @@ class OrderService
             $order = $this->orderRepositoryInterface->create($params);
             $order->orderItems()->createMany($paramItems);
 
+            $this->updateQuantityProduct($paramItems);
+
             return _success(null, __('messages.create_success'), HTTP_SUCCESS);
         }
 
         return _error(null, __('messages.order_items_empty'), HTTP_BAD_REQUEST);
+    }
+
+    public function updateQuantityProduct($paramItems) {
+        foreach ($paramItems as $item) {
+            if (isset($item['child_master_field_id']) && $item['child_master_field_id'] != null) {
+                $product = $this->childMasterFieldRepositoryInterface->detail($item['product_id'], $item['child_master_field_id']);
+
+                if ($product) {
+                    $product->stock -= $item['quantity'];
+                    $product->save();
+                }
+            } else {
+                $product = $this->productRepositoryInterface->detail($item['product_id']);
+
+                if ($product) {
+                    $product->stock -= $item['quantity'];
+                    $product->save();
+                }
+            }
+        }
     }
 
     public function paymentVNPay($orderId)
