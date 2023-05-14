@@ -7,6 +7,7 @@ use App\Http\Requests\CreateOrderRequest;
 use App\Http\Requests\GetListOrderRequest;
 use App\Http\Requests\ListOrderHistoryRequest;
 use App\Http\Requests\ReturnUrlVNPayRequest;
+use App\Http\Requests\UpdateStatusOrderRequest;
 use App\Services\OrderService;
 use Exception;
 use Illuminate\Http\Request;
@@ -137,6 +138,16 @@ class OrderController extends Controller
         try {
             $user = Auth::user();
             return $this->orderService->listOrderHistory($request, $user);
+        } catch (Exception $e) {
+            Log::error(__METHOD__ . ' - ' . __LINE__ . ' : ' . $e->getMessage());
+            return _errorSystem();
+        }
+    }
+
+    public function updateStatusOrder(UpdateStatusOrderRequest $request, $id)
+    {
+        try {
+            return $this->orderService->updateStatusOrder($request, $id);
         } catch (Exception $e) {
             Log::error(__METHOD__ . ' - ' . __LINE__ . ' : ' . $e->getMessage());
             return _errorSystem();

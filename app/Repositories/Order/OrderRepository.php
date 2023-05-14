@@ -51,6 +51,8 @@ class OrderRepository extends BaseRepository implements OrderRepositoryInterface
      */
     public function detail($id)
     {
+        $url = getenv('IMAGEKIT_URL_ENDPOINT');
+
         return $this->_model
             ->select(
                 'id',
@@ -73,7 +75,32 @@ class OrderRepository extends BaseRepository implements OrderRepositoryInterface
                 'total',
                 'note',
             )
-            ->with(['orderItems'])
+            ->with(['orderItems' => function ($q) use ($url) {
+                return $q
+                    ->leftJoin('child_master_fields', 'child_master_fields.id', '=', 'order_items.child_master_field_id')
+                    ->leftJoin('master_fields', 'master_fields.id', '=', 'child_master_fields.master_field_id')
+                    ->select(
+                        'order_items.id as id',
+                        'order_items.product_id as product_id',
+                        'order_items.product_name',
+                        'order_items.order_id as order_id',
+                        'child_master_fields.id as child_master_field_id',
+                        'master_fields.id as master_field_id',
+                        'child_master_fields.name as child_master_field_name',
+                        'master_fields.name as master_field_name',
+                        'order_items.quantity',
+                        'order_items.sale_price',
+                        'order_items.origin_price',
+                        'order_items.total',
+                    )
+                    ->with(['productImages' => function ($qb) use ($url) {
+                        return $qb->select(
+                            'product_images.id',
+                            'product_images.product_id',
+                            DB::raw('CONCAT("' . $url . '", product_images.image) as image'),
+                        );
+                    }]);
+            }])
             ->where('id', $id)
             ->first();
     }
@@ -118,7 +145,7 @@ class OrderRepository extends BaseRepository implements OrderRepositoryInterface
             $query->whereBetween('created_at', [$request->start_date, $request->end_date]);
         }
 
-        return $query;
+        return $query->orderBy('orders.created_at', 'desc');
     }
 
     public function detailOrderPublic($id, $userId)

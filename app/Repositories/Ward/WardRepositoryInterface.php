@@ -2,7 +2,9 @@
 
 namespace App\Repositories\Ward;
 
-interface WardRepositoryInterface
+use App\Repositories\Base\BaseRepositoryInterface;
+
+interface WardRepositoryInterface extends BaseRepositoryInterface
 {
     public function getModel();
 

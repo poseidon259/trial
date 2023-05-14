@@ -18,7 +18,7 @@ trait HasPermissions
             return false;
         }
 
-        if ($roleId <= $this->roles[$slugPermission]) {
+        if ($roleId == $this->roles[$slugPermission]) {
             return true;
         }
 

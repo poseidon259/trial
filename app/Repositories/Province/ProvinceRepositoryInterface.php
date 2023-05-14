@@ -2,7 +2,9 @@
 
 namespace App\Repositories\Province;
 
-interface ProvinceRepositoryInterface
+use App\Repositories\Base\BaseRepositoryInterface;
+
+interface ProvinceRepositoryInterface extends BaseRepositoryInterface
 {
     public function getModel();
 

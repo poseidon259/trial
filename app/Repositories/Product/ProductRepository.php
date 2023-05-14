@@ -150,6 +150,7 @@ class ProductRepository extends BaseRepository implements ProductRepositoryInter
                 'products.created_by',
                 'products.description_list',
                 'products.description_detail',
+                'product_information.id as product_information_id',
                 'product_information.product_code',
                 'product_information.sale_price',
                 'product_information.origin_price',

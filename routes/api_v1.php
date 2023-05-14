@@ -150,6 +150,7 @@ Route::group(['namespace' => 'api\v1'], function () {
             Route::post('/checkout/payment_vn_pay/{orderId}', [OrderController::class, 'paymentVNPay']);
             Route::get('/checkout/check/payment_vn_pay', [OrderController::class, 'checkPaymentVnpay']);
             Route::get('/checkout/ipn_vn_pay', [OrderController::class, 'ipnVNPay']);
+            Route::post('/update_status/{id}', [OrderController::class, 'updateStatusOrder']);
         });
     });
 });

@@ -6,6 +6,7 @@ use App\Repositories\ChildMasterField\ChildMasterFieldRepositoryInterface;
 use App\Repositories\Order\OrderRepositoryInterface;
 use App\Repositories\OrderItem\OrderItemRepositoryInterface;
 use App\Repositories\Product\ProductRepositoryInterface;
+use App\Repositories\ProductInformation\ProductInformationRepositoryInterface;
 use Illuminate\Support\Facades\Redis;
 use Illuminate\Support\Str;
 
@@ -31,18 +32,25 @@ class OrderService
      */
     private $productRepositoryInterface;
 
+    /**
+     * @var ProductInformationRepositoryInterface
+     */
+    private $productInfomationRepositoryInterface;
+
 
     public function __construct(
         OrderRepositoryInterface            $orderRepositoryInterface,
         OrderItemRepositoryInterface        $orderItemRepositoryInterface,
         ChildMasterFieldRepositoryInterface $childMasterFieldRepositoryInterface,
-        ProductRepositoryInterface          $productRepositoryInterface
+        ProductRepositoryInterface          $productRepositoryInterface,
+        ProductInformationRepositoryInterface $productInfomationRepositoryInterface
     )
     {
         $this->orderRepositoryInterface = $orderRepositoryInterface;
         $this->orderItemRepositoryInterface = $orderItemRepositoryInterface;
         $this->childMasterFieldRepositoryInterface = $childMasterFieldRepositoryInterface;
         $this->productRepositoryInterface = $productRepositoryInterface;
+        $this->productInfomationRepositoryInterface = $productInfomationRepositoryInterface;
     }
 
     public function create($request)
@@ -242,15 +250,15 @@ class OrderService
                 $product = $this->childMasterFieldRepositoryInterface->detail($item['product_id'], $item['child_master_field_id']);
 
                 if ($product) {
-                    $product->stock -= $item['quantity'];
-                    $product->save();
+                    $stock = $product->stock - $item['quantity'];
+                    $this->childMasterFieldRepositoryInterface->update($item['child_master_field_id'], ['stock' => $stock]);
                 }
             } else {
                 $product = $this->productRepositoryInterface->detail($item['product_id']);
 
                 if ($product) {
-                    $product->stock -= $item['quantity'];
-                    $product->save();
+                    $stock = $product->stock - $item['quantity'];
+                    $this->productInfomationRepositoryInterface->update($product->product_information_id, ['stock' => $stock]);
                 }
             }
         }
@@ -471,5 +479,21 @@ class OrderService
             'last_page' => $orders->lastPage(),
             'per_page' => $orders->perPage(),
         ];
+    }
+
+    public function updateStatusOrder($request, $id) {
+        $order = $this->orderRepositoryInterface->find($id);
+
+        if (!$order) {
+            return _error(null, __('messages.order_not_found'), HTTP_BAD_REQUEST);
+        }
+
+        $params = [
+            'status' => $request->status
+        ];
+
+        $this->orderRepositoryInterface->update($request->id, $params);
+
+        return _success(null, __('messages.order_updated_success'), HTTP_SUCCESS);
     }
 }

@@ -26,7 +26,7 @@ class ProvinceRepository extends BaseRepository implements ProvinceRepositoryInt
      */
     public function checkExists($key, $value, $id)
     {
-        return $this->_model->where($key, $value)->where('product_information.id', '!=', $id)->first();
+        return $this->_model->where($key, $value)->where('provinces.id', '!=', $id)->first();
     }
 
     /**

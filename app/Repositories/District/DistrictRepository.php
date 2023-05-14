@@ -26,7 +26,7 @@ class DistrictRepository extends BaseRepository implements DistrictRepositoryInt
      */
     public function checkExists($key, $value, $id)
     {
-        return $this->_model->where($key, $value)->where('product_information.id', '!=', $id)->first();
+        return $this->_model->where($key, $value)->where('districts.id', '!=', $id)->first();
     }
 
     /**

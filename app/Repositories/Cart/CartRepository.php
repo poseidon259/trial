@@ -70,6 +70,7 @@ class CartRepository extends BaseRepository implements CartRepositoryInterface
                         'child_master_fields.name as child_master_field_name',
                         'cart_items.child_master_field_id as child_master_field_id',
                     )
+                    ->where(DB::raw('CASE WHEN child_master_fields.master_field_id IS NULL THEN pi.stock ELSE child_master_fields.stock END'), '>', 0)
                     ->with(['productImages' => function ($qb) use ($url) {
                         return $qb->select(
                             'product_images.id',

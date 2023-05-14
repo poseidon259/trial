@@ -26,7 +26,7 @@ class WardRepository extends BaseRepository implements WardRepositoryInterface
      */
     public function checkExists($key, $value, $id)
     {
-        return $this->_model->where($key, $value)->where('product_information.id', '!=', $id)->first();
+        return $this->_model->where($key, $value)->where('wards.id', '!=', $id)->first();
     }
 
     /**
