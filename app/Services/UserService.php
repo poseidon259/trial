@@ -201,9 +201,11 @@ class UserService
             return _error(null, __('messages.email_exists'), HTTP_BAD_REQUEST);
         }
 
-        $checkExistsUserName = $this->userRepositoryInterface->checkExists('user_name', $request->user_name, $id);
+        if ($request->user_name) {
+            $checkExistsUserName = $this->userRepositoryInterface->checkExists('user_name', $request->user_name, $id);
         if ($checkExistsUserName) {
             return _error(null, __('messages.user_name_exists'), HTTP_BAD_REQUEST);
+        }
         }
 
         $checkExistsPhoneNumber = $this->userRepositoryInterface->checkExists('phone_number', $request->phone_number, $id);
@@ -233,7 +235,7 @@ class UserService
             'birthday' => $request->birthday,
             'status' => $request->status,
             'gender' => $request->gender,
-            'role_id' => $request->role_id,
+            'role_id' => ROLE_USER,
             'password' => Hash::make($password),
             'email' => $request->email,
             'user_name' => $request->user_name,

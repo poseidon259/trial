@@ -121,9 +121,9 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
         $url = getenv('IMAGEKIT_URL_ENDPOINT');
         return $this->_model
                     ->join('roles', 'roles.id', '=', 'users.role_id')
-                    ->join('provinces', 'provinces.id', '=', 'users.province_id')
-                    ->join('districts', 'districts.id', '=', 'users.district_id')
-                    ->join('wards', 'wards.id', '=', 'users.ward_id')
+                    // ->join('provinces', 'provinces.id', '=', 'users.province_id')
+                    // ->join('districts', 'districts.id', '=', 'users.district_id')
+                    // ->join('wards', 'wards.id', '=', 'users.ward_id')
                     ->select(
                         'users.id',
                         'email',
@@ -141,9 +141,9 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
                         'users.province_id',
                         'users.district_id',
                         'users.ward_id',
-                        'provinces.name as province_name',
-                        'districts.name as district_name',
-                        'wards.name as ward_name',
+                        // 'provinces.name as province_name',
+                        // 'districts.name as district_name',
+                        // 'wards.name as ward_name',
                         'house_number',
                         DB::raw('(CASE WHEN avatar IS NOT NULL THEN CONCAT("' . $url . '", avatar) ELSE "" END) as avatar'),
                         'gender',

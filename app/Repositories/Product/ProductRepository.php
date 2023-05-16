@@ -260,6 +260,7 @@ class ProductRepository extends BaseRepository implements ProductRepositoryInter
     {
         $url = getenv('IMAGEKIT_URL_ENDPOINT');
         $query = $this->_model
+            ->join('categories', 'categories.id', '=', 'products.category_id')
             ->join('product_information', 'products.id', '=', 'product_information.product_id')
             ->where('products.status', PRODUCT_ACTIVE)
             ->where('products.id', $id)
@@ -267,6 +268,7 @@ class ProductRepository extends BaseRepository implements ProductRepositoryInter
                 'products.id',
                 'products.name',
                 'products.category_id',
+                'categories.name as category_name',
                 'products.status',
                 'products.created_by',
                 'products.description_detail',

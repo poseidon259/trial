@@ -55,6 +55,11 @@ define('ADDRESS_DEFAULT', 1);
 define('ADDRESS_NOT_DEFAULT', 0);
 define('LIMIT_ADDRESS', 5);
 
+// payment_method
+define('PAYMENT_METHOD_COD', 1);
+define('PAYMENT_METHOD_VISA', 2);
+define('PAYMENT_METHOD_VNPAY', 3);
+
 // product
 define('PRODUCT_INACTIVE', 2);
 define('PRODUCT_ACTIVE', 1);

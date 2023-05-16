@@ -79,5 +79,6 @@ return [
     'vnpay_message_signature_error' => 'Chữ ký không hợp lệ',
     'order_status_invalid' => 'Trạng thái đơn hàng không hợp lệ',
     'order_updated_success' => 'Cập nhập đơn hàng thành công',
-    'order_updated_fail' => 'Cập nhập đơn hàng thất bại'
+    'order_updated_fail' => 'Cập nhập đơn hàng thất bại',
+    'title_send_mail_order' => 'Thông báo đặt hàng tại hệ thống Trial',
 ];

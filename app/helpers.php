@@ -1,5 +1,22 @@
 <?php
 
+if (!function_exists('getPaymentMethod')) {
+    /**
+     * @return int
+     */
+    function getPaymentMethod($method)
+    {
+        switch ($method) {
+            case PAYMENT_METHOD_COD:
+                return 'Ship COD';
+            case PAYMENT_METHOD_VISA:
+                return 'Visa/Mastercard';
+            case PAYMENT_METHOD_VNPAY:
+                return 'VNPay';
+        }
+    }
+}
+
 if (!function_exists('_error')) {
     /**
      * @param $data

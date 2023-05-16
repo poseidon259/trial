@@ -37,13 +37,19 @@ class OrderService
      */
     private $productInfomationRepositoryInterface;
 
+    /**
+     * @var MailService
+     */
+    private $mailService;
+
 
     public function __construct(
         OrderRepositoryInterface            $orderRepositoryInterface,
         OrderItemRepositoryInterface        $orderItemRepositoryInterface,
         ChildMasterFieldRepositoryInterface $childMasterFieldRepositoryInterface,
         ProductRepositoryInterface          $productRepositoryInterface,
-        ProductInformationRepositoryInterface $productInfomationRepositoryInterface
+        ProductInformationRepositoryInterface $productInfomationRepositoryInterface,
+        MailService                         $mailService
     )
     {
         $this->orderRepositoryInterface = $orderRepositoryInterface;
@@ -51,6 +57,7 @@ class OrderService
         $this->childMasterFieldRepositoryInterface = $childMasterFieldRepositoryInterface;
         $this->productRepositoryInterface = $productRepositoryInterface;
         $this->productInfomationRepositoryInterface = $productInfomationRepositoryInterface;
+        $this->mailService = $mailService;
     }
 
     public function create($request)
@@ -170,7 +177,7 @@ class OrderService
     public function createOrderByUser($request, $user)
     {
         if (isset($request->order_items)) {
-            $shippingFee = $request->shipping_fee;
+            $shippingFee = $request->shipping_fee ?? DELIVERY_FEE;
             $paramItems = [];
             $subTotal = 0;
             foreach ($request->order_items as $item) {
@@ -237,6 +244,18 @@ class OrderService
             $order->orderItems()->createMany($paramItems);
 
             $this->updateQuantityProduct($paramItems);
+
+            $data = [
+                'order' => $order,
+                'order_items' => $paramItems
+            ];
+
+            $this->mailService->sendEmail(
+                $request->email,
+                $data,
+                __('messages.title_send_mail_order'),
+                'mail.create_order'
+            );
 
             return _success(null, __('messages.create_success'), HTTP_SUCCESS);
         }
