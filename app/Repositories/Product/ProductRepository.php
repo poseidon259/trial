@@ -276,10 +276,11 @@ class ProductRepository extends BaseRepository implements ProductRepositoryInter
                 'products.created_at',
                 'products.updated_at',
             )
-            ->when($request->child_master_field_id, function ($query) {
+            ->when($request->child_master_field_id, function ($query) use ($request) {
                 return $query
                     ->join('child_master_fields', 'child_master_fields.product_id', 'products.id')
                     ->join('master_fields', 'master_fields.id', 'child_master_fields.master_field_id')
+                    ->where('child_master_fields.id', $request->child_master_field_id)
                     ->addSelect('master_fields.name as master_field_name',
                         'child_master_fields.name as child_master_field_name',
                         'child_master_fields.sale_price',

@@ -5,6 +5,7 @@ namespace App\Repositories\Order;
 use App\Models\Order;
 use App\Repositories\Base\BaseRepository;
 use App\Repositories\Order\OrderRepositoryInterface;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
 class OrderRepository extends BaseRepository implements OrderRepositoryInterface
@@ -244,5 +245,25 @@ class OrderRepository extends BaseRepository implements OrderRepositoryInterface
         }
 
         return $query->orderBy('created_at', 'desc');
+    }
+
+    public function dashboard()
+    {
+        $today = Carbon::now()->format('Y-m-d');
+        $startOfMonth = Carbon::now()->startOfMonth()->format('Y-m-d');
+        $startOfYear = Carbon::now()->startOfYear()->format('Y-m-d');
+
+        $result = $this->_model
+            ->select(
+                DB::raw('COUNT(orders.id) as total_order'),
+                DB::raw('SUM(CASE WHEN orders.status <> "' .ORDER_CANCELLED. '" AND orders.status <> "' .ORDER_NEW. '" THEN 1 ELSE 0 END) as total_order_paid'),
+                DB::raw('SUM(CASE WHEN orders.status = "' .ORDER_CANCELLED. '" THEN 1 ELSE 0 END) as total_order_cancel'),
+                DB::raw('SUM(CASE WHEN DATE(orders.payment_date) = "'.$today.'" AND orders.status <> "' .ORDER_CANCELLED. '" AND orders.status <> "' .ORDER_NEW. '" THEN orders.total ELSE 0 END) as total_revenue_day'),
+                DB::raw('SUM(CASE WHEN DATE(orders.payment_date) >= "'.$startOfMonth.'" AND orders.status <> "' .ORDER_CANCELLED. '" AND orders.status <> "' .ORDER_NEW. '" THEN orders.total ELSE 0 END) as total_revenue_month'),
+                DB::raw('SUM(CASE WHEN DATE(orders.payment_date) >= "'.$startOfYear.'" AND orders.status <> "' .ORDER_CANCELLED. '" AND orders.status <> "' .ORDER_NEW. '" THEN orders.total ELSE 0 END) as total_revenue_year')
+            )
+            ->first();
+    
+        return $result;
     }
 }

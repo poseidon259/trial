@@ -19,4 +19,6 @@ interface OrderRepositoryInterface extends BaseRepositoryInterface
     public function detailOrderPublic($id, $userId);
 
     public function listOrderHistory($request, $userId);
+
+    public function dashboard();
 }

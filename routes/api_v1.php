@@ -14,6 +14,7 @@ use App\Http\Controllers\Api\UserAddressController;
 use App\Http\Controllers\Api\StoreController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\AddressController;
+use App\Models\Order;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -55,6 +56,7 @@ Route::group(['namespace' => 'api\v1'], function () {
 
 
     Route::group(['middleware' => 'auth:api'], function () {
+        Route::get('dashboard', [OrderController::class, 'dashboard']);
         // client
         Route::post('client/order', [OrderController::class, 'createOrderByUser']);
         Route::post('client/product/{id}/comment/create', [CommentController::class, 'createCommentPublic']);
@@ -97,11 +99,11 @@ Route::group(['namespace' => 'api\v1'], function () {
         });
 
         Route::prefix('category')->group(function () {
-            Route::get('show/{id}', [CategoryController::class, 'show']);
-            Route::post('create', [CategoryController::class, 'create']);
-            Route::post('update/{id}', [CategoryController::class, 'update']);
-            Route::delete('delete/{id}', [CategoryController::class, 'delete']);
-            Route::get('list', [CategoryController::class, 'list']);
+            Route::get('show/{id}', [CategoryController::class, 'show'])->middleware('permission:admin');
+            Route::post('create', [CategoryController::class, 'create'])->middleware('permission:admin');
+            Route::post('update/{id}', [CategoryController::class, 'update'])->middleware('permission:admin');
+            Route::delete('delete/{id}', [CategoryController::class, 'delete'])->middleware('permission:admin');
+            Route::get('list', [CategoryController::class, 'list'])->middleware('permission:admin');
 
             Route::prefix('{categoryId}/child')->group(function () {
                 Route::post('create', [CategoryChildController::class, 'create']);
@@ -111,11 +113,11 @@ Route::group(['namespace' => 'api\v1'], function () {
         });
 
         Route::prefix('product')->group(function () {
-            Route::get('list', [ProductController::class, 'list']);
-            Route::get('show/{id}', [ProductController::class, 'show']);
-            Route::post('create', [ProductController::class, 'create']);
-            Route::post('update/{id}', [ProductController::class, 'update']);
-            Route::delete('delete/{id}', [ProductController::class, 'delete']);
+            Route::get('list', [ProductController::class, 'list'])->middleware('permission:admin');
+            Route::get('show/{id}', [ProductController::class, 'show'])->middleware('permission:admin');
+            Route::post('create', [ProductController::class, 'create'])->middleware('permission:admin');
+            Route::post('update/{id}', [ProductController::class, 'update'])->middleware('permission:admin');
+            Route::delete('delete/{id}', [ProductController::class, 'delete'])->middleware('permission:admin');
 
             Route::prefix('{productId}/comment')->group(function () {
                 Route::get('list', [CommentController::class, 'list']);

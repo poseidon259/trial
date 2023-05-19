@@ -50,8 +50,7 @@ class OrderService
         ProductRepositoryInterface          $productRepositoryInterface,
         ProductInformationRepositoryInterface $productInfomationRepositoryInterface,
         MailService                         $mailService
-    )
-    {
+    ) {
         $this->orderRepositoryInterface = $orderRepositoryInterface;
         $this->orderItemRepositoryInterface = $orderItemRepositoryInterface;
         $this->childMasterFieldRepositoryInterface = $childMasterFieldRepositoryInterface;
@@ -263,7 +262,8 @@ class OrderService
         return _error(null, __('messages.order_items_empty'), HTTP_BAD_REQUEST);
     }
 
-    public function updateQuantityProduct($paramItems) {
+    public function updateQuantityProduct($paramItems)
+    {
         foreach ($paramItems as $item) {
             if (isset($item['child_master_field_id']) && $item['child_master_field_id'] != null) {
                 $product = $this->childMasterFieldRepositoryInterface->detail($item['product_id'], $item['child_master_field_id']);
@@ -500,7 +500,8 @@ class OrderService
         ];
     }
 
-    public function updateStatusOrder($request, $id) {
+    public function updateStatusOrder($request, $id)
+    {
         $order = $this->orderRepositoryInterface->find($id);
 
         if (!$order) {
@@ -508,11 +509,17 @@ class OrderService
         }
 
         $params = [
-            'status' => $request->status
+            'status' => $request->status,
+            'payment_date' => $request->status != ORDER_NEW && $request->status != ORDER_CANCELLED ? now() : null,
         ];
 
         $this->orderRepositoryInterface->update($request->id, $params);
 
         return _success(null, __('messages.order_updated_success'), HTTP_SUCCESS);
+    }
+
+    public function dashboard()
+    {
+        return $this->orderRepositoryInterface->dashboard();
     }
 }

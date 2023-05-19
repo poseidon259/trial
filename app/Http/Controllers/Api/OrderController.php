@@ -24,8 +24,7 @@ class OrderController extends Controller
 
     public function __construct(
         OrderService $orderService
-    )
-    {
+    ) {
         $this->orderService = $orderService;
     }
 
@@ -148,6 +147,16 @@ class OrderController extends Controller
     {
         try {
             return $this->orderService->updateStatusOrder($request, $id);
+        } catch (Exception $e) {
+            Log::error(__METHOD__ . ' - ' . __LINE__ . ' : ' . $e->getMessage());
+            return _errorSystem();
+        }
+    }
+
+    public function dashboard()
+    {
+        try {
+            return $this->orderService->dashboard();
         } catch (Exception $e) {
             Log::error(__METHOD__ . ' - ' . __LINE__ . ' : ' . $e->getMessage());
             return _errorSystem();

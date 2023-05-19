@@ -273,10 +273,9 @@ class UserService
         $data = [
             'name' => $user->first_name . ' ' . $user->last_name,
             'email' => $user->email,
-            'user_name' => $user->user_name,
             'phone_number' => $user->phone_number,
             'password' => $password,
-            'url' => $request->role_id == ROLE_ADMIN ? env('ADMIN_URL') : env('STORE_URL')
+            'url' => getenv('CUSTOMER_URL')
         ];
 
         $this->mailService->sendEmail(
